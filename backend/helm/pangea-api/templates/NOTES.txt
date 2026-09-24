@@ -1,0 +1,16 @@
+pangea-api deployed.
+
+1. Wait for it to come up:
+
+     oc rollout status deployment/pangea-api
+
+2. Check health (expects the pangea-db Service to be reachable):
+
+     oc exec deployment/pangea-api -- curl -s localhost:8080/api/health
+
+3. External URL for the dashboard:
+
+     echo "https://$(oc get route pangea-api -o jsonpath='{.spec.host}')/api/fleet/status"
+
+In-cluster endpoint: pangea-api:8080
+DB credentials come from Secret pangea-db-credentials.

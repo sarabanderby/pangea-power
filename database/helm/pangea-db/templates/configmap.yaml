@@ -1,0 +1,21 @@
+{{- /*
+Schema + optional seed, mounted into the pgvector image's auto-init directory
+(/docker-entrypoint-initdb.d). The official Postgres entrypoint runs every *.sql
+here in filename order, but ONLY when the data directory is first initialised —
+so this is naturally idempotent across pod restarts.
+Files come from the chart's files/init and files/seed directories.
+*/ -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pangea-db-initdb
+  labels:
+    app.kubernetes.io/name: pangea-db
+    app.kubernetes.io/part-of: pangea-power
+data:
+  # Schema (01-extensions .. 06-functions)
+{{ (.Files.Glob "files/init/*.sql").AsConfig | indent 2 }}
+{{- if .Values.seed }}
+  # Demo seed (07-sites .. 10-operations) -- included because seed=true
+{{ (.Files.Glob "files/seed/*.sql").AsConfig | indent 2 }}
+{{- end }}

@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pangea-api
+  labels:
+    app.kubernetes.io/name: pangea-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pangea-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: pangea-api
+    spec:
+      containers:
+        - name: api
+          image: "image-registry.openshift-image-registry.svc:5000/pangea-energy-and-power/pangea-api:latest"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          # Runtime-tunable knobs; explicit env: below wins on name clashes.
+          envFrom:
+            - configMapRef:
+                name: pangea-api-config
+          env:
+            - name: POSTGRES_HOST
+              value: "pangea-db"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: CORS_ORIGINS
+              value: "*"
+            # Solar prediction: in-cluster KServe v2 endpoint for the
+            # solar-output model + public Open-Meteo weather API.
+            - name: SOLAR_MODEL_URL
+              value: "http://solar-output-predictor.pangea-energy-and-power.svc.cluster.local/v2/models/solar-output/infer"
+            - name: OPEN_METEO_URL
+              value: "https://api.open-meteo.com/v1/forecast"
+            # WIND_CUTOUT_MS comes from the pangea-api-config ConfigMap.
+            # Voice STT (in-cluster Whisper predictor).
+            - name: WHISPER_URL
+              value: "http://whisper-tiny-predictor.pangea-energy-and-power.svc.cluster.local/v1/audio/transcriptions"
+            - name: WHISPER_MODEL
+              value: "whisper-tiny"
+            - name: WHISPER_LANGUAGE
+              value: "en"
+            # Conversational agent LLM: Granite 4.0 350M on vLLM CPU (KServe).
+            - name: AGENT_LLM_URL
+              value: "http://granite4-predictor.pangea-energy-and-power.svc.cluster.local/v1/chat/completions"
+            - name: AGENT_LLM_MODEL
+              value: "granite4"
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: pangea-db-credentials
+                  key: database-name
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pangea-db-credentials
+                  key: database-user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pangea-db-credentials
+                  key: database-password
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pangea-api
+  labels:
+    app.kubernetes.io/name: pangea-api
+spec:
+  selector:
+    app.kubernetes.io/name: pangea-api
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: pangea-api
+  labels:
+    app.kubernetes.io/name: pangea-api
+spec:
+  to:
+    kind: Service
+    name: pangea-api
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

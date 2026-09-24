@@ -1,0 +1,22 @@
+# pangea-db — the only knobs worth changing. Everything else is fixed in the
+# templates (name is always "pangea-db"). Edit and re-run `helm upgrade`.
+
+image:
+  # Community pgvector image (Postgres 15 + pgvector, PostgreSQL-licensed).
+  repository: docker.io/pgvector/pgvector
+  tag: pg15
+  pullPolicy: IfNotPresent
+
+# Load the demo fleet (5 sites, 90 turbines, 48h of time-series) on first init.
+seed: true
+
+# Data volume size. Leave storageClass empty to use the cluster default.
+storageSize: 10Gi
+storageClass: ""
+
+# Credentials. In this image the created user is the database superuser and owns
+# the schema. These are demo defaults — change them before any real deployment.
+credentials:
+  database: pangea
+  user: pangea_app
+  password: pangea_app_pw

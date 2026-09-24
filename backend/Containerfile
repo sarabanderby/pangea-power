@@ -1,0 +1,17 @@
+# Pangea Energy and Power — backend API
+# UBI9 Python base so it runs cleanly under OpenShift's restricted-v2 SCC.
+FROM registry.access.redhat.com/ubi9/python-311:latest
+
+WORKDIR /opt/app-root/src
+
+# Dependencies first for layer caching.
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app ./app
+
+EXPOSE 8080
+
+# Runs as an arbitrary non-root UID under restricted-v2; no USER pin needed —
+# the ubi9/python image is already set up for that.
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

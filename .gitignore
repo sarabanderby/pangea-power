@@ -1,0 +1,42 @@
+# Raw / source datasets — huge and reproducible; the DB is seeded from
+# database/helm/pangea-db/files/seed/*.sql, not these.
+windfarms/
+wavefarms/
+*.csv
+
+# Model weights & large tokenizer blobs (fetched from Hugging Face).
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.gguf
+granite-4.0-350m/tokenizer.json
+granite-4.0-350m/vocab.json
+granite-4.0-350m/merges.txt
+
+# Caches / build junk
+.cache/
+**/.cache/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.DS_Store
+
+# Excluded docs / notebooks / images (per request)
+*.ipynb
+DATABASE_SCHEMA.md
+DESIGN_DECISIONS.md
+ChatGPT Image*.png
+
+# Secrets / local env
+.env
+.env.*
+*.env
+!*.env.example
+*.pem
+*.key
+kubeconfig
+.kube/
+
+# Design doc (kept local)
+assistant-architecture.md

@@ -1,0 +1,14 @@
+# Modelcar: an OCI image that carries the solar-output ONNX model.
+# KServe (RHOAI) mounts the contents of /models into the serving runtime,
+# so no S3 / PVC is needed — you reference it as  storageUri: oci://<image>.
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
+
+# All model artifacts must live under /models for the modelcar to be read.
+# Named model.onnx so MLServer's onnx runtime auto-discovers it (no
+# model-settings.json needed — KServe generates settings from the runtime env).
+COPY solar_xgb.onnx /models/model.onnx
+
+# No CMD needed: KServe injects its own keep-alive command into the modelcar
+# sidecar. (Add  CMD ["sleep", "infinity"]  only if you want to `podman run`
+# the image standalone for debugging.)
+USER 1001

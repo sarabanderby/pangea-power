@@ -1,0 +1,18 @@
+# Pangea Energy and Power — dashboard UI
+# UBI9 nginx serves the static dashboard and reverse-proxies /api to pangea-api.
+FROM registry.access.redhat.com/ubi9/nginx-124:latest
+
+# Static assets go in the image's document root.
+COPY dashboard-app.html /opt/app-root/src/index.html
+COPY pange.png /opt/app-root/src/pange.png
+# Vendored public-domain (Natural Earth / world-atlas) map geometry, served same-origin.
+COPY countries-50m.json /opt/app-root/src/countries-50m.json
+
+# Server-block snippet adding the /api reverse proxy.
+COPY nginx.default.d/api-proxy.conf /opt/app-root/etc/nginx.default.d/api-proxy.conf
+
+EXPOSE 8080
+
+# The ubi9/nginx image already listens on 8080 and runs under an arbitrary
+# non-root UID (OpenShift restricted-v2 friendly).
+CMD ["nginx", "-g", "daemon off;"]
