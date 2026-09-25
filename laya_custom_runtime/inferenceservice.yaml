@@ -3,6 +3,7 @@ kind: InferenceService
 metadata:
   name: laya-predictor
   annotations:
+    serving.kserve.io/deploymentMode: Standard
     serving.knative.openshift.io/enablePassthrough: "true"
     sidecar.istio.io/inject: "true"
     sidecar.istio.io/rewriteAppHTTPProbers: "true"
@@ -12,5 +13,3 @@ spec:
       modelFormat:
         name: laya
       runtime: laya-typed-decisions
-      # No storageUri: Laya's Router downloads its checkpoints from the Hugging Face Hub
-      # at startup, there is no model artifact to mount from storage.

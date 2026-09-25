@@ -10,18 +10,22 @@ spec:
   multiModel: false
   containers:
     - name: kserve-container
-      image: quay.io/rlundber/laya-runtime:1.0
+      image: quay.io/rlundber/laya-runtime:0.1
       args:
         - --model_name={{.Name}}
         - --http_port=8080
-        # - --preload           # on by default; drop to --no-preload for lazy loading
-        # - --device=cuda       # defaults to Laya's own device detection
-      # env:
-      #   - name: HF_TOKEN      # only needed for private/gated checkpoints
-      #     valueFrom:
-      #       secretKeyRef:
-      #         name: hf-token
-      #         key: token
+      env:
+        - name: HOME
+          value: /tmp
+        - name: HF_HOME
+          value: /tmp/huggingface
+      resources:
+        requests:
+          cpu: "2"
+          memory: 6Gi
+        limits:
+          cpu: "4"
+          memory: 10Gi
       ports:
         - containerPort: 8080
           protocol: TCP

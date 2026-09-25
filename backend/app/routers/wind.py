@@ -1,13 +1,5 @@
-"""Wind-farm live status + high-wind cut-out detection.
-
-For each wind site we pull the live hub-height wind speed (Open-Meteo
-``wind_speed_100m``). When it exceeds the storm cut-out (default 22 m/s) the
-turbines must shut down for protection, so the site is reported as shut down and
-a high-wind alert is raised (merged into the alert feed by ``alerts.py``).
-
-Degrades gracefully: if Open-Meteo is unreachable we fall back to the site's
-seeded average wind speed, which never trips the cut-out on its own.
-"""
+"""Wind-farm live status + high-wind cut-out detection. Falls back to the
+site's seeded average wind speed if Open-Meteo is unreachable."""
 from __future__ import annotations
 
 import time
@@ -22,15 +14,11 @@ from ..models import Alert, WindStatus
 
 router = APIRouter(prefix="/api/wind", tags=["wind"])
 
-# One shared cache for the per-site status (weather changes slowly).
 _cache: tuple[float, list[WindStatus]] | None = None
 
 
 async def _fetch_wind_now(lat: float, lon: float) -> tuple[float, float | None]:
-    """Return (hub-height wind m/s, gust m/s) for the current hour.
-
-    Raises on any failure so the caller can fall back to the site average.
-    """
+    """Return (hub-height wind m/s, gust m/s) for the current hour; raises on failure."""
     params = {
         "latitude": lat,
         "longitude": lon,
@@ -45,7 +33,7 @@ async def _fetch_wind_now(lat: float, lon: float) -> tuple[float, float | None]:
         data = resp.json()
 
     hourly = data["hourly"]
-    times = [datetime.fromisoformat(t) for t in hourly["time"]]  # naive local
+    times = [datetime.fromisoformat(t) for t in hourly["time"]]
     speed = hourly["wind_speed_100m"]
     gust = hourly["wind_gusts_10m"]
     offset = data.get("utc_offset_seconds", 0)
@@ -110,12 +98,8 @@ async def wind_statuses() -> list[WindStatus]:
 
 
 async def high_wind_alerts() -> list[Alert]:
-    """Synthetic alerts for sites currently in high-wind shutdown.
-
-    Merged into the main feed by ``alerts.py`` so they surface in the dashboard
-    alert panel and the assistant's context. IDs are negative to avoid colliding
-    with real (positive) alert IDs from the database.
-    """
+    """Synthetic alerts for sites in high-wind shutdown; negative IDs avoid
+    colliding with real DB alert IDs."""
     now = datetime.now(timezone.utc)
     alerts: list[Alert] = []
     for w in await wind_statuses():

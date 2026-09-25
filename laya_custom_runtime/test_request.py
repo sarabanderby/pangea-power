@@ -1,16 +1,3 @@
-"""Send a test request to the deployed Laya InferenceService.
-
-From a notebook/pod inside the cluster, the Service is reachable directly on port 80
-(the Service maps 80 -> the container's 8080) - no port-forward needed, just run:
-
-    python test_request.py
-
-From outside the cluster, forward the predictor service to your machine first:
-
-    oc port-forward -n laya svc/laya-predictor-predictor 8080:80
-
-then change URL below to "http://localhost:8080/v1/models/laya-predictor:predict".
-"""
 import json
 import urllib.request
 

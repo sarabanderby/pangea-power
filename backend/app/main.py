@@ -11,7 +11,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import db
 from .config import settings
-from .routers import agent, alerts, fleet, solar, turbines, voice, wave, wind
+from .routers import (
+    agent, alerts, fleet, maintenance, operators, solar, turbines, voice, wave, wind,
+)
 
 
 @asynccontextmanager
@@ -38,6 +40,8 @@ app.add_middleware(
 app.include_router(fleet.router)
 app.include_router(turbines.router)
 app.include_router(alerts.router)
+app.include_router(maintenance.router)
+app.include_router(operators.router)
 app.include_router(solar.router)
 app.include_router(wave.router)
 app.include_router(wind.router)

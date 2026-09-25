@@ -2,7 +2,7 @@
 the UI never touches Postgres directly."""
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 
 from pydantic import BaseModel
 
@@ -51,6 +51,47 @@ class Alert(BaseModel):
     title: str
     message: str
     recommended_action: str | None = None
+
+
+class WorkOrder(BaseModel):
+    work_order_number: str
+    title: str
+    work_type: str
+    priority: str
+    status: str
+    turbine_code: str | None = None
+    site_name: str | None = None
+    scheduled_start: datetime | None = None
+
+
+class WorkOrderCreate(BaseModel):
+    turbine_code: str
+    work_type: str
+    priority: str
+    title: str
+    description: str | None = None
+    assigned_operative_code: str | None = None
+    scheduled_start: datetime | None = None
+    scheduled_end: datetime | None = None
+    estimated_hours: float | None = None
+
+
+class OperatorAvailability(BaseModel):
+    employee_code: str
+    name: str
+    skill_level: str
+    certifications: list[str] = []
+    specializations: list[str] = []
+    base_location: str | None = None
+    offshore_certified: bool = False
+    max_travel_distance_km: int | None = None
+    today_shift: str
+    weekly_schedule: dict[str, str] = {}
+    exception_dates: list[date] = []
+    on_leave_until: date | None = None
+    open_assignments: int = 0
+    current_task: str | None = None
+    upcoming_assignments: list[dict] = []
 
 
 class Site(BaseModel):
@@ -169,6 +210,11 @@ class WindStatus(BaseModel):
     weather_source: str              # 'open-meteo' | 'site-average'
 
 
+class SpeakRequest(BaseModel):
+    text: str
+    voice: str | None = None
+
+
 class AgentChatRequest(BaseModel):
     message: str
     ui_context: dict | None = None   # current dashboard state, for grounding
@@ -178,3 +224,4 @@ class AgentChatRequest(BaseModel):
 class AgentChatResponse(BaseModel):
     reply: str
     model: str | None = None
+    route: dict | None = None  # laya tool/site decision, when used

@@ -10,6 +10,7 @@ wavefarms/
 *.pt
 *.pth
 *.gguf
+kokoro_tts/modelcar/kokoro.onnx
 granite-4.0-350m/tokenizer.json
 granite-4.0-350m/vocab.json
 granite-4.0-350m/merges.txt

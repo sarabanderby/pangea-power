@@ -25,6 +25,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: pangea-api-config
+            - configMapRef:
+                name: pangea-api-prompt
           env:
             - name: POSTGRES_HOST
               value: "pangea-db"

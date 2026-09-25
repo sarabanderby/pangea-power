@@ -71,9 +71,7 @@ _TE_FROM_TP = 0.9
 _cache: dict[str, tuple[float, WavePrediction]] = {}
 
 
-# ---------------------------------------------------------------------------
 # Physics
-# ---------------------------------------------------------------------------
 def _wave_power_flux(hs: float, te: float) -> float:
     """Deep-water wave energy flux in kW per metre of wave crest.
 
@@ -82,9 +80,7 @@ def _wave_power_flux(hs: float, te: float) -> float:
     return 0.49 * hs * hs * te
 
 
-# ---------------------------------------------------------------------------
 # Sea state: Open-Meteo Marine primary, calm-sea simulation fallback
-# ---------------------------------------------------------------------------
 async def _fetch_marine(lat: float, lon: float, hours: int = _FORECAST_HOURS) -> list[dict]:
     """Return up to `hours` hourly sea-state records starting at the current hour.
 
@@ -175,9 +171,7 @@ def _calm_sea(lat: float, lon: float, hours: int = _FORECAST_HOURS) -> list[dict
     return out
 
 
-# ---------------------------------------------------------------------------
 # Sea state -> capacity-scaled forecast (shared by both endpoints)
-# ---------------------------------------------------------------------------
 async def _scaled_forecast(site: dict, hours: int) -> tuple[list[dict], str, list[WaveForecastPoint]]:
     """Return (raw sea-state rows, source, capacity-scaled forecast points)."""
     lat = float(site["latitude"])
@@ -210,9 +204,7 @@ def _health_factor(site_code: str, hour_seed: str) -> float:
     return max(0.0, min(1.0, base - rng.uniform(0.0, 0.02)))
 
 
-# ---------------------------------------------------------------------------
 # Per-site prediction (cached)
-# ---------------------------------------------------------------------------
 async def _predict_site(site: dict) -> WavePrediction:
     code = site["site_code"]
     cached = _cache.get(code)
@@ -259,9 +251,7 @@ async def _predict_site(site: dict) -> WavePrediction:
     return result
 
 
-# ---------------------------------------------------------------------------
 # Routes
-# ---------------------------------------------------------------------------
 async def _wave_sites(site_code: str | None = None) -> list[dict]:
     query = (
         "SELECT site_code, site_name, latitude, longitude, capacity_kw, nearest_city "

@@ -50,9 +50,7 @@ _UNDERPERF_PCT = 8.0
 _cache: dict[str, tuple[float, SolarPrediction]] = {}
 
 
-# ---------------------------------------------------------------------------
 # Feature engineering
-# ---------------------------------------------------------------------------
 def _features(irradiance: float, ambient: float, cloud: float, hour: int) -> list[float]:
     """Build the 7 model features (order matters)."""
     panel = ambient + (_NOCT - 20.0) / 800.0 * irradiance
@@ -71,9 +69,7 @@ def _health_factor(site_code: str, hour_seed: str) -> float:
     return max(0.0, min(1.0, base - rng.uniform(0.0, 0.02)))
 
 
-# ---------------------------------------------------------------------------
 # Weather: Open-Meteo primary, clear-sky simulation fallback
-# ---------------------------------------------------------------------------
 async def _fetch_open_meteo(lat: float, lon: float, hours: int = _FORECAST_HOURS) -> list[dict]:
     """Return up to `hours` hourly records starting at the current hour.
 
@@ -179,9 +175,7 @@ def _clear_sky(lat: float, lon: float, hours: int = _FORECAST_HOURS) -> list[dic
     return out
 
 
-# ---------------------------------------------------------------------------
 # Model inference (batched) with a physics proxy fallback
-# ---------------------------------------------------------------------------
 async def _infer(rows: list[dict]) -> list[float]:
     """Return per-unit predicted kW for each hour via the KServe v2 endpoint.
 
@@ -210,9 +204,7 @@ async def _infer(rows: list[dict]) -> list[float]:
         ]
 
 
-# ---------------------------------------------------------------------------
 # Weather -> model -> capacity-scaled forecast (shared by both endpoints)
-# ---------------------------------------------------------------------------
 async def _scaled_forecast(site: dict, hours: int) -> tuple[list[dict], str, list[SolarForecastPoint]]:
     """Return (raw weather rows, weather source, capacity-scaled forecast points)."""
     lat = float(site["latitude"])
@@ -240,9 +232,7 @@ async def _scaled_forecast(site: dict, hours: int) -> tuple[list[dict], str, lis
     return rows, source, forecast
 
 
-# ---------------------------------------------------------------------------
 # Per-site prediction (cached)
-# ---------------------------------------------------------------------------
 async def _predict_site(site: dict) -> SolarPrediction:
     code = site["site_code"]
     cached = _cache.get(code)
@@ -290,9 +280,7 @@ async def _predict_site(site: dict) -> SolarPrediction:
     return result
 
 
-# ---------------------------------------------------------------------------
 # Routes
-# ---------------------------------------------------------------------------
 async def _solar_sites(site_code: str | None = None) -> list[dict]:
     query = (
         "SELECT site_code, site_name, latitude, longitude, capacity_kw, nearest_city "

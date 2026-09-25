@@ -890,6 +890,106 @@
         .solar-day .d-energy { font-size: 1.05rem; font-weight: 600; color: #fbbf24; }
         .solar-day .d-peak { font-size: 0.72rem; color: #94a3b8; margin-top: 0.15rem; }
 
+        /* Operator schedule */
+        .schedule-btn {
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .schedule-btn:hover { background: rgba(56, 189, 248, 0.2); }
+
+        .sched-modal { max-width: 1120px; }
+        .sched-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .sched-field { display: flex; flex-direction: column; gap: 0.3rem; }
+        .sched-field.wide { grid-column: 1 / -1; }
+        .sched-field label { font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.04rem; }
+        .sched-field input,
+        .sched-field select {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 8px;
+            color: #e3f2fd;
+            padding: 0.5rem 0.6rem;
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+        .sched-field input:focus,
+        .sched-field select:focus { outline: none; border-color: rgba(56, 189, 248, 0.6); }
+        .sched-actions { grid-column: 1 / -1; display: flex; align-items: center; gap: 1rem; }
+        .sched-submit {
+            padding: 0.55rem 1.4rem;
+            border-radius: 8px;
+            border: none;
+            background: #38bdf8;
+            color: #041022;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .sched-submit:disabled { opacity: 0.5; cursor: progress; }
+        .sched-msg { font-size: 0.8rem; }
+        .sched-msg.ok { color: #4ade80; }
+        .sched-msg.err { color: #f87171; }
+
+        .sched-section-title {
+            font-size: 0.9rem; font-weight: 600; color: #e3f2fd;
+            margin: 0.5rem 0 0.75rem;
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        }
+        .cal-legend { display: flex; gap: 0.6rem; font-weight: 400; }
+        .cal-legend span { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.68rem; color: #94a3b8; }
+        .cal-legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+        .cal-wrap { overflow-x: auto; border: 1px solid rgba(56, 189, 248, 0.12); border-radius: 10px; }
+        .cal-grid { display: grid; background: rgba(56, 189, 248, 0.08); gap: 1px; min-width: 900px; }
+        .cal-grid > div { background: #0e1c30; }
+        .cal-corner, .cal-opname {
+            position: sticky; left: 0; z-index: 2;
+            background: #12233b; padding: 0.5rem 0.6rem;
+        }
+        .cal-corner { z-index: 3; top: 0; font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.04rem; }
+        .cal-dayhead {
+            position: sticky; top: 0; z-index: 1;
+            background: #12233b; padding: 0.4rem 0.4rem; text-align: center;
+            display: flex; flex-direction: column; gap: 0.05rem;
+        }
+        .cal-dayhead.today { background: rgba(56, 189, 248, 0.18); }
+        .cal-wd { font-size: 0.62rem; color: #64748b; text-transform: uppercase; }
+        .cal-dm { font-size: 0.78rem; color: #e3f2fd; font-weight: 600; }
+        .cal-opname { display: flex; flex-direction: column; gap: 0.1rem; }
+        .cal-opn { font-size: 0.82rem; font-weight: 600; color: #e3f2fd; }
+        .cal-ops { font-size: 0.64rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.03rem; }
+        .cal-cell { padding: 0.35rem 0.35rem; min-height: 52px; display: flex; flex-direction: column; gap: 0.25rem; }
+        .cal-cell.today { background: rgba(56, 189, 248, 0.05); }
+        .cal-shift {
+            font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.03rem;
+            padding: 0.1rem 0.35rem; border-radius: 5px; align-self: flex-start;
+            background: rgba(15, 23, 42, 0.7); color: #64748b;
+        }
+        .cal-shift.day { background: rgba(56, 189, 248, 0.18); color: #7dd3fc; }
+        .cal-shift.night { background: rgba(129, 140, 248, 0.18); color: #a5b4fc; }
+        .cal-shift.on_call { background: rgba(251, 191, 36, 0.18); color: #fcd34d; }
+        .cal-shift.off { opacity: 0.55; }
+        .cal-shift.leave { background: rgba(248, 113, 113, 0.18); color: #fca5a5; }
+        .cal-task {
+            font-size: 0.66rem; line-height: 1.2; color: #e3f2fd;
+            background: rgba(30, 41, 59, 0.9); border-left: 2px solid #38bdf8;
+            border-radius: 4px; padding: 0.18rem 0.3rem;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .cal-empty { font-size: 0.8rem; color: #94a3b8; padding: 0.5rem; }
+
         .view-all:hover {
             text-decoration: underline;
         }
@@ -1524,8 +1624,8 @@
                 <span id="voiceStatus" class="voice-status"></span>
             </div>
             <div class="header-right">
-                <!-- AI presence consolidated into the center chat window; the
-                     redundant top-corner "Ask Pangea" + user menu were removed. -->
+                <button class="schedule-btn" id="ttsToggle" onclick="toggleTts()">Voice: on</button>
+                <button class="schedule-btn" onclick="openSchedule()">Operator schedule</button>
             </div>
         </div>
 
@@ -1653,7 +1753,7 @@
             <div class="ai-chat-section">
                 <div class="ai-header">
                     <div class="ai-title">
-                        <div class="ai-avatar">🤖</div>
+                        <div class="ai-avatar">P</div>
                         <div>
                             <div class="ai-name">Pangea AI</div>
                             <div class="ai-status">
@@ -1665,30 +1765,9 @@
                     <div style="cursor: pointer; color: #64748b;">⋯</div>
                 </div>
 
-                <div class="ai-body">
-                    <div class="ai-suggestion-card">
-                        <div class="suggestion-header">
-                            <span class="suggestion-icon">💨</span>
-                            <span class="suggestion-title">T-104 - Vibration trend</span>
-                            <span class="suggestion-badge">Early warning</span>
-                        </div>
-                        <div class="suggestion-content">
-                            North Sea fleet at 96% availability. Two turbines (T-104, T-107) show early-warning vibration — I'd schedule an inspection within 10 days.
-                        </div>
-                        <div class="suggestion-actions">
-                            <div class="suggestion-action">Schedule inspection (within 10 days)</div>
-                            <div class="suggestion-action">Check bearing temperature</div>
-                            <div class="suggestion-action">Review historical data</div>
-                        </div>
-                        <div class="ai-buttons">
-                            <button class="ai-button primary">Create work order</button>
-                            <button class="ai-button secondary">Show similar cases</button>
-                        </div>
-                    </div>
-                </div>
+                <div class="ai-body"></div>
 
                 <div class="ai-input">
-                    <span>🎤</span>
                     <input id="chatInput" type="text" placeholder="Ask a question or give a command..." onkeydown="if(event.key==='Enter')sendChat()">
                     <button class="send-button" onclick="sendChat()">➤</button>
                 </div>
@@ -1824,6 +1903,74 @@
         </div>
     </div>
 
+    <div class="solar-modal-backdrop" id="scheduleModal" onclick="if(event.target===this)closeSchedule()">
+        <div class="solar-modal sched-modal">
+            <div class="solar-modal-head">
+                <div class="solar-modal-title">Operator schedule</div>
+                <button class="solar-modal-close" onclick="closeSchedule()" aria-label="Close">×</button>
+            </div>
+            <div class="solar-modal-sub">Assign a work order and review technician availability.</div>
+
+            <div class="sched-section-title">New task</div>
+            <form class="sched-form" id="schedForm" onsubmit="submitTask(event)">
+                <div class="sched-field wide">
+                    <label for="schedTitle">Title</label>
+                    <input id="schedTitle" required placeholder="e.g. Pitch system calibration">
+                </div>
+                <div class="sched-field">
+                    <label for="schedTurbine">Turbine</label>
+                    <select id="schedTurbine" required></select>
+                </div>
+                <div class="sched-field">
+                    <label for="schedOperator">Assign to</label>
+                    <select id="schedOperator"></select>
+                </div>
+                <div class="sched-field">
+                    <label for="schedType">Work type</label>
+                    <select id="schedType">
+                        <option value="preventive">Preventive</option>
+                        <option value="corrective">Corrective</option>
+                        <option value="inspection">Inspection</option>
+                        <option value="emergency">Emergency</option>
+                    </select>
+                </div>
+                <div class="sched-field">
+                    <label for="schedPriority">Priority</label>
+                    <select id="schedPriority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                </div>
+                <div class="sched-field">
+                    <label for="schedStart">Scheduled start</label>
+                    <input id="schedStart" type="datetime-local">
+                </div>
+                <div class="sched-field">
+                    <label for="schedHours">Estimated hours</label>
+                    <input id="schedHours" type="number" step="0.5" min="0" placeholder="e.g. 4">
+                </div>
+                <div class="sched-actions">
+                    <button class="sched-submit" id="schedSubmit" type="submit">Create task</button>
+                    <span class="sched-msg" id="schedMsg"></span>
+                </div>
+            </form>
+
+            <div class="sched-section-title">
+                <span>Two-week roster</span>
+                <span class="cal-legend">
+                    <span><i style="background:#38bdf8"></i>day</span>
+                    <span><i style="background:#818cf8"></i>night</span>
+                    <span><i style="background:#fbbf24"></i>on-call</span>
+                    <span><i style="background:#f87171"></i>leave</span>
+                    <span><i style="background:#334155"></i>off</span>
+                </span>
+            </div>
+            <div class="cal-wrap" id="schedCal"></div>
+        </div>
+    </div>
+
     <script>
         // Backend API base. Served same-origin: nginx reverse-proxies /api to the
         // pangea-api Service. When opened as a local file this simply fails and the
@@ -1835,6 +1982,15 @@
         let mediaRecorder = null;
         let audioChunks = [];
         let isRecording = false;
+
+        // Hands-free conversation: auto-stop on silence, auto re-listen after Pangea speaks.
+        let conversationMode = false;
+        let audioCtx = null, vadAnalyser = null, vadRaf = null;
+        let vadSpeechSeen = false, vadSilenceStart = 0, vadStartedAt = 0;
+        const VAD_THRESHOLD = 0.015;   // RMS above this counts as speech
+        const VAD_SILENCE_MS = 1300;   // trailing silence that ends a turn
+        const VAD_MAX_MS = 15000;      // hard cap on one utterance
+        const VAD_NOSPEECH_MS = 7000;  // silence with no speech -> end conversation
 
         function setVoiceStatus(msg) {
             const el = document.getElementById('voiceStatus');
@@ -1857,26 +2013,40 @@
             }
         }
 
-        async function toggleVoice() {
-            if (isRecording) { stopVoice(); return; }
+        // Clicking the mic starts (and joins) a hands-free conversation; clicking
+        // again while listening ends it.
+        function toggleVoice() {
+            if (isRecording) { conversationMode = false; stopVoice(); return; }
+            conversationMode = true;
+            startListening();
+        }
+
+        async function startListening() {
+            if (isRecording) return;
             if (!navigator.mediaDevices || !window.MediaRecorder) {
                 setVoiceStatus('Voice not supported in this browser.');
+                conversationMode = false;
                 return;
             }
+            stopSpeaking();   // never record Pangea's own voice
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 audioChunks = [];
                 mediaRecorder = new MediaRecorder(stream);
                 mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
                 mediaRecorder.onstop = () => {
+                    const hadSpeech = vadSpeechSeen;
+                    stopVad();
                     stream.getTracks().forEach(t => t.stop());
-                    sendAudio(new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' }));
+                    sendAudio(new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' }), hadSpeech);
                 };
                 mediaRecorder.start();
                 isRecording = true;
                 setVoiceButton('recording');
-                setVoiceStatus('Listening… click Stop when done.');
+                setVoiceStatus(conversationMode ? 'Listening… (click to end)' : 'Listening… click Stop when done.');
+                startVad(stream);
             } catch (err) {
+                conversationMode = false;
                 setVoiceStatus('Microphone access denied.');
             }
         }
@@ -1890,7 +2060,63 @@
             }
         }
 
-        async function sendAudio(blob) {
+        // Voice-activity detection: auto-stop once the speaker goes quiet.
+        function startVad(stream) {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioCtx.createMediaStreamSource(stream);
+                vadAnalyser = audioCtx.createAnalyser();
+                vadAnalyser.fftSize = 2048;
+                source.connect(vadAnalyser);
+                const buf = new Float32Array(vadAnalyser.fftSize);
+                vadSpeechSeen = false;
+                vadSilenceStart = 0;
+                vadStartedAt = performance.now();
+                const tick = () => {
+                    if (!isRecording || !vadAnalyser) return;
+                    vadAnalyser.getFloatTimeDomainData(buf);
+                    let sum = 0;
+                    for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+                    const rms = Math.sqrt(sum / buf.length);
+                    const now = performance.now();
+                    if (rms > VAD_THRESHOLD) {
+                        vadSpeechSeen = true;
+                        vadSilenceStart = 0;
+                    } else if (vadSpeechSeen) {
+                        if (!vadSilenceStart) vadSilenceStart = now;
+                        else if (now - vadSilenceStart > VAD_SILENCE_MS) { stopVoice(); return; }
+                    }
+                    if (now - vadStartedAt > VAD_MAX_MS) { stopVoice(); return; }
+                    if (!vadSpeechSeen && now - vadStartedAt > VAD_NOSPEECH_MS) { stopVoice(); return; }
+                    vadRaf = requestAnimationFrame(tick);
+                };
+                vadRaf = requestAnimationFrame(tick);
+            } catch (e) {
+                // No Web Audio -> fall back to manual/click-to-stop.
+            }
+        }
+
+        function stopVad() {
+            if (vadRaf) { cancelAnimationFrame(vadRaf); vadRaf = null; }
+            if (audioCtx) { try { audioCtx.close(); } catch (e) {} audioCtx = null; }
+            vadAnalyser = null;
+        }
+
+        // Re-open the mic for the next turn once Pangea has finished replying.
+        function maybeRelisten() {
+            if (conversationMode && !isRecording) {
+                setTimeout(() => { if (conversationMode && !isRecording) startListening(); }, 350);
+            }
+        }
+
+        async function sendAudio(blob, hadSpeech = true) {
+            // Silence with no speech = the user is done talking; leave conversation.
+            if (!hadSpeech && conversationMode) {
+                conversationMode = false;
+                setVoiceButton('idle');
+                setVoiceStatus('');
+                return;
+            }
             try {
                 const form = new FormData();
                 form.append('audio', blob, 'clip.webm');
@@ -1901,11 +2127,15 @@
                 setVoiceButton('idle');
                 if (text) {
                     setVoiceStatus('“' + text + '”');
-                    sendChat(text);
+                    sendChat(text);   // reply streams, then speakReply() -> maybeRelisten()
+                } else if (conversationMode) {
+                    setVoiceStatus('Didn’t catch that.');
+                    maybeRelisten();
                 } else {
                     setVoiceStatus('Didn’t catch that — try again.');
                 }
             } catch (err) {
+                conversationMode = false;
                 setVoiceButton('idle');
                 setVoiceStatus('Transcription failed. Is the model up?');
             }
@@ -1933,11 +2163,26 @@
                     wind: r(windOutputMw), solar: r(solarOutputMw), wave: r(waveOutputMw),
                     total: r((windOutputMw || 0) + (solarOutputMw || 0) + (waveOutputMw || 0))
                 },
-                solar_sites: Object.values(solarBySite).map(site),
+                solar_sites: Object.values(solarBySite).map(s => ({
+                    ...site(s),
+                    cloud_cover_pct: r(s.cloud_cover_pct),
+                    irradiance_wm2: Math.round(s.irradiance_wm2 || 0)
+                })),
                 wave_sites: Object.values(waveBySite).map(site),
+                wind_sites: Object.values(windBySite).map(w => ({
+                    code: w.site_code, name: w.site_name, status: w.status,
+                    wind_ms: w.wind_speed_ms, gust_ms: w.gust_ms,
+                    cutout_ms: w.cutout_ms, shutdown: w.shutdown
+                })),
                 active_alerts: (activeAlerts || []).slice(0, 10).map(a => ({
                     title: a.title, severity: a.severity,
                     turbine: a.turbine_code, site: a.site_name
+                })),
+                maintenance_tasks: (maintenanceTasks || []).slice(0, 10).map(w => ({
+                    id: w.work_order_number, title: w.title, type: w.work_type,
+                    priority: w.priority, status: w.status,
+                    turbine: w.turbine_code, site: w.site_name,
+                    scheduled_start: w.scheduled_start
                 })),
                 at: new Date().toISOString()
             };
@@ -1964,21 +2209,121 @@
             if (input && text == null) input.value = '';
             appendChat('user', msg);
             const bubble = appendChat('assistant', '…');
+            const body = document.querySelector('.ai-body');
             try {
-                const res = await fetch(API_BASE + '/agent/chat', {
+                const res = await fetch(API_BASE + '/agent/chat/stream', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: msg, ui_context: buildUiContext(), history: chatHistory })
                 });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-                const reply = (data.reply || '').trim() || '(no response)';
+                if (!res.ok || !res.body) throw new Error('HTTP ' + res.status);
+
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                let reply = '';
+                let streamErr = null;
+
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    buffer += decoder.decode(value, { stream: true });
+                    const events = buffer.split('\n\n');
+                    buffer = events.pop();
+                    for (const evt of events) {
+                        const dataLine = evt.split('\n').find(l => l.startsWith('data:'));
+                        if (!dataLine) continue;
+                        let payload;
+                        try { payload = JSON.parse(dataLine.slice(5).trim()); } catch { continue; }
+                        if (payload.error) { streamErr = payload.error; continue; }
+                        if (payload.delta) {
+                            if (!reply) bubble.textContent = '';
+                            reply += payload.delta;
+                            bubble.textContent = reply;
+                            body.scrollTop = body.scrollHeight;
+                        }
+                    }
+                }
+
+                reply = reply.trim();
+                if (!reply) { bubble.textContent = streamErr || '(no response)'; return; }
                 bubble.textContent = reply;
                 // Remember this turn and cap growth (backend replays the last 6).
                 chatHistory.push({ role: 'user', content: msg }, { role: 'assistant', content: reply });
                 if (chatHistory.length > 12) chatHistory = chatHistory.slice(-12);
+                speakReply(reply);
             } catch (e) {
                 bubble.textContent = 'Pangea is offline right now — the assistant model isn’t deployed yet.';
+            }
+        }
+
+        // ---- Text-to-speech: Pangea reads its replies aloud (Kokoro via /api/voice/speak) ----
+        let ttsEnabled = true;
+        let ttsAudioEl = null;
+        let ttsUnlocked = false;
+        let ttsObjectUrl = null;
+        // 44-byte silent WAV, played muted inside a user gesture to grant autoplay
+        // permission on the reused element so later async replies can speak (Safari).
+        const TTS_SILENCE = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+
+        function getTtsEl() {
+            if (!ttsAudioEl) {
+                ttsAudioEl = new Audio();
+                ttsAudioEl.addEventListener('ended', () => {
+                    if (ttsObjectUrl) { URL.revokeObjectURL(ttsObjectUrl); ttsObjectUrl = null; }
+                    maybeRelisten();
+                });
+                ttsAudioEl.addEventListener('error', () => maybeRelisten());
+            }
+            return ttsAudioEl;
+        }
+
+        function unlockTts() {
+            if (ttsUnlocked) return;
+            const el = getTtsEl();
+            el.muted = true;
+            el.src = TTS_SILENCE;
+            el.play().then(() => {
+                el.pause();
+                el.currentTime = 0;
+                el.muted = false;
+                ttsUnlocked = true;
+            }).catch(() => { el.muted = false; });
+        }
+        ['pointerdown', 'keydown', 'touchstart'].forEach(ev =>
+            document.addEventListener(ev, unlockTts, true));
+
+        function stopSpeaking() {
+            if (ttsAudioEl) { ttsAudioEl.pause(); ttsAudioEl.currentTime = 0; }
+            if (ttsObjectUrl) { URL.revokeObjectURL(ttsObjectUrl); ttsObjectUrl = null; }
+        }
+
+        function toggleTts() {
+            ttsEnabled = !ttsEnabled;
+            if (!ttsEnabled) stopSpeaking();
+            const btn = document.getElementById('ttsToggle');
+            if (btn) btn.textContent = ttsEnabled ? 'Voice: on' : 'Voice: off';
+        }
+
+        async function speakReply(text) {
+            if (!ttsEnabled || !text) { maybeRelisten(); return; }
+            try {
+                const res = await fetch(API_BASE + '/voice/speak', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text }),
+                });
+                if (!res.ok) { maybeRelisten(); return; }
+                const blob = await res.blob();
+                stopSpeaking();
+                const el = getTtsEl();
+                ttsObjectUrl = URL.createObjectURL(blob);
+                el.src = ttsObjectUrl;
+                el.muted = false;
+                el.play().catch(() => maybeRelisten());
+            } catch (e) {
+                console.warn('speakReply failed:', e.message);
+                maybeRelisten();
             }
         }
 
@@ -2106,6 +2451,7 @@
         // UI state used to ground the assistant ("what am I looking at?").
         let openForecast = null;   // {kind, site_code, site_name} when a modal is open
         let activeAlerts = [];     // latest /alerts?status=active
+        let maintenanceTasks = []; // latest /maintenance (open work orders)
 
         function renderTotalOutput() {
             if (windOutputMw === null && solarOutputMw === null && waveOutputMw === null) return;  // nothing live yet
@@ -2169,6 +2515,14 @@
                 }).join('');
             } catch (e) {
                 console.warn('loadAlerts failed, keeping static values:', e.message);
+            }
+        }
+
+        async function loadMaintenance() {
+            try {
+                maintenanceTasks = await apiGet('/maintenance');
+            } catch (e) {
+                console.warn('loadMaintenance failed:', e.message);
             }
         }
 
@@ -2438,8 +2792,140 @@
         }
 
         window.addEventListener('keydown', e => {
-            if (e.key === 'Escape') closeSolarForecast();
+            if (e.key === 'Escape') { closeSolarForecast(); closeSchedule(); }
         });
+
+        // ---- Operator schedule modal ----
+
+        // Sunday-indexed lookup (Date.getDay()) into the mon-keyed weekly_schedule.
+        const CAL_WD_KEY = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+        const CAL_DAYS = 14;
+
+        async function openSchedule() {
+            document.getElementById('scheduleModal').classList.add('open');
+            document.getElementById('schedMsg').textContent = '';
+            try {
+                const [turbines, operators] = await Promise.all([
+                    apiGet('/turbines'),
+                    apiGet('/operators'),
+                ]);
+                populateTurbines(turbines);
+                populateOperators(operators);
+                renderCalendar(operators);
+            } catch (e) {
+                document.getElementById('schedCal').innerHTML =
+                    `<div class="cal-empty">Could not load schedule: ${e.message}</div>`;
+            }
+        }
+
+        function closeSchedule() {
+            document.getElementById('scheduleModal').classList.remove('open');
+        }
+
+        function populateTurbines(turbines) {
+            const sel = document.getElementById('schedTurbine');
+            sel.innerHTML = turbines.map(t =>
+                `<option value="${t.turbine_code}">${t.turbine_code} — ${t.site_name}</option>`).join('');
+        }
+
+        function populateOperators(operators) {
+            const sel = document.getElementById('schedOperator');
+            sel.innerHTML = '<option value="">Unassigned</option>' + operators.map(o =>
+                `<option value="${o.employee_code}">${o.name} (${o.skill_level})</option>`).join('');
+        }
+
+        function calIsoLocal(d) {
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        function renderCalendar(operators) {
+            const el = document.getElementById('schedCal');
+            if (!operators.length) { el.innerHTML = '<div class="cal-empty">No technicians available.</div>'; return; }
+
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const todayIso = calIsoLocal(today);
+            const days = [];
+            for (let i = 0; i < CAL_DAYS; i++) {
+                const d = new Date(today); d.setDate(today.getDate() + i); days.push(d);
+            }
+
+            let html = '<div class="cal-corner">Technician</div>';
+            for (const d of days) {
+                const wd = d.toLocaleDateString(undefined, { weekday: 'short' });
+                const dm = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                const t = calIsoLocal(d) === todayIso ? ' today' : '';
+                html += `<div class="cal-dayhead${t}"><span class="cal-wd">${wd}</span><span class="cal-dm">${dm}</span></div>`;
+            }
+
+            for (const o of operators) {
+                html += `<div class="cal-opname"><span class="cal-opn">${o.name}</span><span class="cal-ops">${o.employee_code} · ${o.skill_level}</span></div>`;
+                for (const d of days) {
+                    const iso = calIsoLocal(d);
+                    const shift = (o.weekly_schedule && o.weekly_schedule[CAL_WD_KEY[d.getDay()]]) || 'off';
+                    const onLeave = o.on_leave_until && iso <= o.on_leave_until;
+                    const isException = (o.exception_dates || []).includes(iso);
+                    const cls = onLeave ? 'leave' : (isException ? 'off' : shift);
+                    const label = onLeave ? 'leave' : (isException ? 'off' : shift.replace('_', '-'));
+                    const chips = (o.upcoming_assignments || [])
+                        .filter(u => u.scheduled_start && calIsoLocal(new Date(u.scheduled_start)) === iso)
+                        .map(u => `<span class="cal-task" title="${u.title} (${u.status})">${u.title}</span>`)
+                        .join('');
+                    const t = iso === todayIso ? ' today' : '';
+                    html += `<div class="cal-cell${t}"><span class="cal-shift ${cls}">${label}</span>${chips}</div>`;
+                }
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'cal-grid';
+            grid.style.gridTemplateColumns = `170px repeat(${CAL_DAYS}, minmax(96px, 1fr))`;
+            grid.innerHTML = html;
+            el.innerHTML = '';
+            el.appendChild(grid);
+        }
+
+        async function submitTask(event) {
+            event.preventDefault();
+            const btn = document.getElementById('schedSubmit');
+            const msg = document.getElementById('schedMsg');
+            const hours = document.getElementById('schedHours').value;
+            const start = document.getElementById('schedStart').value;
+            const operative = document.getElementById('schedOperator').value;
+            const body = {
+                turbine_code: document.getElementById('schedTurbine').value,
+                work_type: document.getElementById('schedType').value,
+                priority: document.getElementById('schedPriority').value,
+                title: document.getElementById('schedTitle').value.trim(),
+                assigned_operative_code: operative || null,
+                scheduled_start: start ? new Date(start).toISOString() : null,
+                estimated_hours: hours ? parseFloat(hours) : null,
+            };
+            btn.disabled = true;
+            msg.textContent = '';
+            msg.className = 'sched-msg';
+            try {
+                const res = await fetch(API_BASE + '/maintenance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                });
+                if (!res.ok) {
+                    let detail = res.status;
+                    try { detail = (await res.json()).detail || detail; } catch {}
+                    throw new Error(detail);
+                }
+                const wo = await res.json();
+                document.getElementById('schedForm').reset();
+                document.getElementById('schedPriority').value = 'medium';
+                await Promise.all([loadMaintenance(), openSchedule()]);
+                msg.textContent = `Created ${wo.work_order_number} (${wo.status}).`;
+                msg.className = 'sched-msg ok';
+            } catch (e) {
+                msg.textContent = `Could not create task: ${e.message}`;
+                msg.className = 'sched-msg err';
+            } finally {
+                btn.disabled = false;
+            }
+        }
 
         // ---- Europe map (D3 + vendored public-domain Natural Earth geometry) ----
 
@@ -2637,6 +3123,7 @@
         async function refreshLiveData() {
             loadFleet();
             loadAlerts();
+            loadMaintenance();
             loadSolar();
             loadWave();
             checkAgentHealth();
