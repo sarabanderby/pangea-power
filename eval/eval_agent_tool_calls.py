@@ -135,24 +135,37 @@ DATASET = [
 
 
 def predict_fn(message: str, ui_context: dict) -> dict:
-    """Call the live agent and record its routing decision as a TOOL span."""
-    resp = requests.post(
-        f"{AGENT_URL}/api/agent/chat",
-        json={"message": message, "ui_context": ui_context, "history": []},
-        timeout=REQUEST_TIMEOUT_S,
-    )
-    resp.raise_for_status()
-    body = resp.json()
+    """Call the live agent and record its routing decision as a TOOL span.
 
-    route = body.get("route") or {}
-    tool_name = route.get("tool") or "none"
-    site = route.get("site")
+    The outer span is the trace root: it carries the real request (message,
+    ui_context) and response (reply, route) so the trace reads like a normal
+    agent call. The Laya routing decision is recorded as a nested TOOL span
+    -- without this wrapper, mlflow.start_span() below would itself become
+    the (parentless) trace root, and the trace would show only the tool call
+    with no visible request/reply.
+    """
+    with mlflow.start_span(name="agent_chat", span_type=SpanType.AGENT) as root:
+        root.set_inputs({"message": message, "ui_context": ui_context})
 
-    with mlflow.start_span(name=tool_name, span_type=SpanType.TOOL) as span:
-        span.set_inputs({"site": site})
-        span.set_outputs({"tool_confidence": route.get("tool_confidence")})
+        resp = requests.post(
+            f"{AGENT_URL}/api/agent/chat",
+            json={"message": message, "ui_context": ui_context, "history": []},
+            timeout=REQUEST_TIMEOUT_S,
+        )
+        resp.raise_for_status()
+        body = resp.json()
 
-    return {"reply": body.get("reply"), "route": route}
+        route = body.get("route") or {}
+        tool_name = route.get("tool") or "none"
+        site = route.get("site")
+
+        with mlflow.start_span(name=tool_name, span_type=SpanType.TOOL) as tool_span:
+            tool_span.set_inputs({"site": site})
+            tool_span.set_outputs({"tool_confidence": route.get("tool_confidence")})
+
+        output = {"reply": body.get("reply"), "route": route}
+        root.set_outputs(output)
+        return output
 
 
 def main() -> None:
