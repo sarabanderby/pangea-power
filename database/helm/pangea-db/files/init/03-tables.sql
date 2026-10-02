@@ -26,6 +26,7 @@ CREATE TABLE sites (
 
     access_difficulty  VARCHAR(50),   -- 'easy' | 'moderate' | 'difficult' | 'weather-dependent'
     nearest_city       VARCHAR(100),
+    country            VARCHAR(60),
     travel_time_hours  DECIMAL(4,2),
 
     created_at         TIMESTAMPTZ DEFAULT NOW(),

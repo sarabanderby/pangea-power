@@ -62,6 +62,7 @@ class WorkOrder(BaseModel):
     turbine_code: str | None = None
     site_name: str | None = None
     scheduled_start: datetime | None = None
+    assigned_operative: str | None = None
 
 
 class WorkOrderCreate(BaseModel):
@@ -105,6 +106,7 @@ class Site(BaseModel):
     latitude: float | None = None
     longitude: float | None = None
     nearest_city: str | None = None
+    country: str | None = None
     operational: int = 0
     maintenance: int = 0
     offline: int = 0
@@ -219,6 +221,7 @@ class AgentChatRequest(BaseModel):
     message: str
     ui_context: dict | None = None   # current dashboard state, for grounding
     history: list[dict] | None = None  # prior [{role, content}] turns
+    session_id: str | None = None    # groups traces from one browser session
 
 
 class AgentChatResponse(BaseModel):

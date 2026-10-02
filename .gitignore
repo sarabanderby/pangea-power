@@ -41,3 +41,8 @@ kubeconfig
 
 # Design doc (kept local)
 assistant-architecture.md
+
+# One-off patches for the live cluster DB, which was initialised before the
+# current seeds. A fresh deploy gets the same end state from
+# database/helm/pangea-db/files/{init,seed}/*.sql, so these are local-only.
+database/migrations/

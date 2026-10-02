@@ -9,20 +9,20 @@ SELECT setseed(0.42);
 -- ---------------------------------------------------------------------------
 INSERT INTO sites (site_name, site_code, terrain, latitude, longitude, elevation_meters,
                    turbine_count, commissioned_date, avg_wind_speed_ms, min_temp_celsius,
-                   max_temp_celsius, access_difficulty, nearest_city, travel_time_hours) VALUES
-('Mountain Peak',      'MTP', 'mountain',  46.802700,   9.836100, 1850, 15, DATE '2017-06-15', 8.4, -25,  22, 'difficult',         'Chur',        3.5),
-('North Sea Offshore', 'NSO', 'offshore',  54.900000,   6.500000,    0, 25, DATE '2019-03-20', 11.2,  -5,  24, 'weather-dependent', 'Esbjerg',     4.0),
-('Baltic Plains',      'MWP', 'plains',    53.428500,  14.552900,   45, 20, DATE '2016-09-01', 7.8,  -20,  33, 'easy',              'Szczecin',    1.0),
-('Coastal Ridge',      'CRG', 'coastal',   38.544900,  -9.006500,  120, 18, DATE '2018-11-10', 9.1,   2,  33, 'moderate',          'Lisbon',      1.5),
-('Iberian Flats',      'DFL', 'desert',    37.003600,  -2.400900,  520, 12, DATE '2020-05-05', 6.9,   2,  44, 'easy',              'Almería',     0.8);
+                   max_temp_celsius, access_difficulty, nearest_city, country, travel_time_hours) VALUES
+('Calanda',  'MTP', 'mountain',  46.802700,   9.836100, 1850, 15, DATE '2017-06-15', 8.4, -25,  22, 'difficult',         'Chur',        'Switzerland', 3.5),
+('Blavand',  'NSO', 'offshore',  54.900000,   6.500000,    0, 25, DATE '2019-03-20', 11.2,  -5,  24, 'weather-dependent', 'Esbjerg',     'Denmark', 4.0),
+('Odra',     'MWP', 'plains',    53.428500,  14.552900,   45, 20, DATE '2016-09-01', 7.8,  -20,  33, 'easy',              'Szczecin',    'Poland', 1.0),
+('Sintra',   'CRG', 'coastal',   38.544900,  -9.006500,  120, 18, DATE '2018-11-10', 9.1,   2,  33, 'moderate',          'Lisbon',      'Portugal', 1.5),
+('Tabernas', 'DFL', 'desert',    37.003600,  -2.400900,  520, 12, DATE '2020-05-05', 6.9,   2,  44, 'easy',              'Almería',     'Spain', 0.8);
 
 -- Northern Norway (Arctic) wind farm at Björnefjäll, near Narvik. Exposed
 -- mountain terrain, high mean wind, harsh winters. Turbines are generated from
 -- turbine_count in seed 08 (time-series in 09) like the other wind sites.
 INSERT INTO sites (site_name, site_code, terrain, latitude, longitude, elevation_meters,
                    turbine_count, commissioned_date, avg_wind_speed_ms, min_temp_celsius,
-                   max_temp_celsius, access_difficulty, nearest_city, travel_time_hours) VALUES
-('Björnefjäll Wind Farm', 'BJF', 'mountain', 68.430000, 18.130000, 520, 14, DATE '2024-08-15', 9.6, -30, 20, 'weather-dependent', 'Narvik', 1.0);
+                   max_temp_celsius, access_difficulty, nearest_city, country, travel_time_hours) VALUES
+('Björnefjäll Wind Farm', 'BJF', 'mountain', 68.430000, 18.130000, 520, 14, DATE '2024-08-15', 9.6, -30, 20, 'weather-dependent', 'Narvik', 'Norway', 1.0);
 
 -- ---------------------------------------------------------------------------
 -- Solar plants (3, in sunny Southern Europe). No turbines: generation is
@@ -31,10 +31,10 @@ INSERT INTO sites (site_name, site_code, terrain, latitude, longitude, elevation
 -- ---------------------------------------------------------------------------
 INSERT INTO sites (site_name, site_code, terrain, energy_type, latitude, longitude, elevation_meters,
                    turbine_count, capacity_kw, commissioned_date, min_temp_celsius, max_temp_celsius,
-                   access_difficulty, nearest_city, travel_time_hours) VALUES
-('Guadalquivir Solar', 'GDQ', 'plains',  'solar', 37.389100,  -5.984500,   12, 0, 60000, DATE '2022-04-12',  1, 44, 'easy', 'Seville',   0.6),
-('Alentejo Solar',     'ALT', 'plains',  'solar', 38.571400,  -7.913500,  245, 0, 50000, DATE '2021-09-30',  0, 41, 'easy', 'Évora',     0.9),
-('Trinacria Solar',    'TRN', 'coastal', 'solar', 37.075500,  15.286600,   40, 0, 45000, DATE '2023-03-08',  4, 40, 'easy', 'Syracuse',  0.7);
+                   access_difficulty, nearest_city, country, travel_time_hours) VALUES
+('Guadalquivir Solar', 'GDQ', 'plains',  'solar', 37.389100,  -5.984500,   12, 0, 60000, DATE '2022-04-12',  1, 44, 'easy', 'Seville',   'Spain', 0.6),
+('Alentejo Solar',     'ALT', 'plains',  'solar', 38.571400,  -7.913500,  245, 0, 50000, DATE '2021-09-30',  0, 41, 'easy', 'Évora',     'Portugal', 0.9),
+('Trinacria Solar',    'TRN', 'coastal', 'solar', 37.075500,  15.286600,   40, 0, 45000, DATE '2023-03-08',  4, 40, 'easy', 'Syracuse',  'Italy', 0.7);
 
 -- ---------------------------------------------------------------------------
 -- Wave farms (2, North Atlantic / Norwegian Sea). No turbines: output is
@@ -45,9 +45,9 @@ INSERT INTO sites (site_name, site_code, terrain, energy_type, latitude, longitu
 -- ---------------------------------------------------------------------------
 INSERT INTO sites (site_name, site_code, terrain, energy_type, latitude, longitude, elevation_meters,
                    turbine_count, capacity_kw, commissioned_date, min_temp_celsius, max_temp_celsius,
-                   access_difficulty, nearest_city, travel_time_hours) VALUES
-('Orkney Wave Farm', 'ORK', 'coastal', 'wave', 59.000000,  -3.600000, 0, 0, 7400, DATE '2023-06-15', -2, 18, 'difficult', 'Kirkwall', 1.5),
-('Runde Wave Farm',  'RUN', 'coastal', 'wave', 62.500000,   5.000000, 0, 0, 7360, DATE '2024-05-20', -5, 20, 'difficult', 'Ålesund',  2.0);
+                   access_difficulty, nearest_city, country, travel_time_hours) VALUES
+('Orkney Wave Farm', 'ORK', 'coastal', 'wave', 59.000000,  -3.600000, 0, 0, 7400, DATE '2023-06-15', -2, 18, 'difficult', 'Kirkwall', 'United Kingdom', 1.5),
+('Runde Wave Farm',  'RUN', 'coastal', 'wave', 62.500000,   5.000000, 0, 0, 7360, DATE '2024-05-20', -5, 20, 'difficult', 'Ålesund',  'Norway', 2.0);
 
 -- ---------------------------------------------------------------------------
 -- Parts inventory (mix of common wear items + critical long-lead parts;
@@ -78,66 +78,112 @@ INSERT INTO parts_inventory (part_number, part_name, category, compatible_models
 INSERT INTO maintenance_operatives (employee_code, first_name, last_name, email, skill_level,
                                     certifications, specializations, base_location,
                                     max_travel_distance_km, offshore_certified, rope_access_certified,
-                                    high_altitude_certified, hire_date, hourly_rate) VALUES
-('OP-001','Alex','Nygaard','alex.nygaard@pangea.example','expert',
+                                    high_altitude_certified, hire_date, hourly_rate, on_leave_until) VALUES
+('OP-001','Astrid','Nygaard','astrid.nygaard@pangea.example','expert',
    ARRAY['electrical','mechanical','offshore_safety','high_voltage','gwa_basic','gwa_advanced']::certification_type[],
-   ARRAY['gearbox','generator'], 'Esbjerg', 2000, TRUE, TRUE, TRUE, DATE '2015-02-01', 68.00),
-('OP-002','Sam','Okafor','sam.okafor@pangea.example','expert',
+   ARRAY['gearbox','generator'], 'Esbjerg', 2000, TRUE, TRUE, TRUE, DATE '2015-02-01', 68.00, NULL),
+('OP-002','Samuel','Okafor','samuel.okafor@pangea.example','expert',
    ARRAY['electrical','mechanical','blade_repair','offshore_safety','high_voltage','rope_access','gwa_basic','gwa_advanced']::certification_type[],
-   ARRAY['blade_inspection','offshore'], 'Lisbon', 2000, TRUE, TRUE, TRUE, DATE '2015-08-15', 70.00),
-('OP-003','Jordan','Vasquez','jordan.vasquez@pangea.example','senior',
+   ARRAY['blade_inspection','offshore'], 'Lisbon', 2000, TRUE, TRUE, TRUE, DATE '2015-08-15', 70.00, NULL),
+('OP-003','Katarzyna','Wójcik','katarzyna.wojcik@pangea.example','senior',
    ARRAY['electrical','mechanical','high_voltage','gwa_basic','gwa_advanced']::certification_type[],
-   ARRAY['generator','electrical_systems'], 'Szczecin', 1200, FALSE, FALSE, TRUE, DATE '2016-05-10', 55.00),
-('OP-004','Riley','Haugen','riley.haugen@pangea.example','senior',
+   ARRAY['generator','electrical_systems'], 'Szczecin', 1200, FALSE, FALSE, TRUE, DATE '2016-05-10', 55.00, NULL),
+('OP-004','Lukas','Haugen','lukas.haugen@pangea.example','senior',
    ARRAY['mechanical','hydraulic','rope_access','gwa_basic','gwa_advanced']::certification_type[],
-   ARRAY['pitch_system','hydraulics'], 'Chur', 1000, FALSE, TRUE, TRUE, DATE '2016-11-22', 56.00),
-('OP-005','Casey','Mbeki','casey.mbeki@pangea.example','senior',
+   ARRAY['pitch_system','hydraulics'], 'Chur', 1000, FALSE, TRUE, TRUE, DATE '2016-11-22', 56.00, NULL),
+('OP-005','Freja','Sørensen','freja.sorensen@pangea.example','senior',
    ARRAY['electrical','mechanical','blade_repair','offshore_safety','gwa_basic','gwa_advanced']::certification_type[],
-   ARRAY['blade_inspection'], 'Esbjerg', 1500, TRUE, TRUE, TRUE, DATE '2017-03-30', 54.00),
-('OP-006','Morgan','Larsen','morgan.larsen@pangea.example','senior',
+   ARRAY['blade_inspection'], 'Esbjerg', 1500, TRUE, TRUE, TRUE, DATE '2017-03-30', 54.00, NULL),
+('OP-006','Elena','Navarro','elena.navarro@pangea.example','senior',
    ARRAY['electrical','mechanical','high_voltage','gwa_basic','gwa_advanced']::certification_type[],
-   ARRAY['gearbox'], 'Almería', 900, FALSE, FALSE, TRUE, DATE '2017-07-18', 53.00),
-('OP-007','Taylor','Ferreira','taylor.ferreira@pangea.example','intermediate',
+   ARRAY['gearbox'], 'Almería', 900, FALSE, FALSE, TRUE, DATE '2017-07-18', 53.00, DATE '2026-10-06'),
+('OP-007','Mariana','Ferreira','mariana.ferreira@pangea.example','intermediate',
    ARRAY['electrical','mechanical','gwa_basic']::certification_type[],
-   ARRAY['electrical_systems'], 'Lisbon', 700, FALSE, FALSE, TRUE, DATE '2019-01-14', 42.00),
-('OP-008','Jamie','Kowalski','jamie.kowalski@pangea.example','intermediate',
+   ARRAY['electrical_systems'], 'Lisbon', 700, FALSE, FALSE, TRUE, DATE '2019-01-14', 42.00, NULL),
+('OP-008','Piotr','Kowalski','piotr.kowalski@pangea.example','intermediate',
    ARRAY['mechanical','hydraulic','gwa_basic']::certification_type[],
-   ARRAY['hydraulics'], 'Szczecin', 700, FALSE, FALSE, TRUE, DATE '2019-04-02', 41.00),
-('OP-009','Devin','Andersen','devin.andersen@pangea.example','intermediate',
+   ARRAY['hydraulics'], 'Szczecin', 700, FALSE, FALSE, TRUE, DATE '2019-04-02', 41.00, NULL),
+('OP-009','Ingrid','Andersen','ingrid.andersen@pangea.example','intermediate',
    ARRAY['electrical','mechanical','offshore_safety','gwa_basic']::certification_type[],
-   ARRAY['generator'], 'Esbjerg', 900, TRUE, FALSE, TRUE, DATE '2019-09-11', 43.00),
-('OP-010','Quinn','Rossi','quinn.rossi@pangea.example','intermediate',
+   ARRAY['generator'], 'Esbjerg', 900, TRUE, FALSE, TRUE, DATE '2019-09-11', 43.00, NULL),
+('OP-010','Nadia','Rossi','nadia.rossi@pangea.example','intermediate',
    ARRAY['electrical','mechanical','blade_repair','gwa_basic']::certification_type[],
-   ARRAY['blade_inspection'], 'Chur', 600, FALSE, TRUE, TRUE, DATE '2020-02-20', 40.00),
-('OP-011','Reese','Bauer','reese.bauer@pangea.example','intermediate',
+   ARRAY['blade_inspection'], 'Chur', 600, FALSE, TRUE, TRUE, DATE '2020-02-20', 40.00, NULL),
+('OP-011','Javier','Moreno','javier.moreno@pangea.example','intermediate',
    ARRAY['electrical','mechanical','high_voltage','gwa_basic']::certification_type[],
-   ARRAY['electrical_systems'], 'Almería', 700, FALSE, FALSE, TRUE, DATE '2020-06-08', 42.00),
-('OP-012','Sky','Nowak','sky.nowak@pangea.example','intermediate',
+   ARRAY['electrical_systems'], 'Almería', 700, FALSE, FALSE, TRUE, DATE '2020-06-08', 42.00, NULL),
+('OP-012','Tomás','Silva','tomas.silva@pangea.example','intermediate',
    ARRAY['mechanical','hydraulic','gwa_basic']::certification_type[],
-   ARRAY['pitch_system'], 'Lisbon', 600, FALSE, FALSE, TRUE, DATE '2021-03-15', 39.00),
+   ARRAY['pitch_system'], 'Lisbon', 600, FALSE, FALSE, TRUE, DATE '2021-03-15', 39.00, NULL),
 ('OP-013','Robin','Haas','robin.haas@pangea.example','junior',
    ARRAY['electrical','mechanical','gwa_basic']::certification_type[],
-   ARRAY['general'], 'Szczecin', 400, FALSE, FALSE, FALSE, DATE '2023-05-02', 30.00),
-('OP-014','Charlie','Dumont','charlie.dumont@pangea.example','junior',
+   ARRAY['general'], 'Szczecin', 400, FALSE, FALSE, FALSE, DATE '2023-05-02', 30.00, DATE '2026-10-02'),
+('OP-014','Lucía','Ortega','lucia.ortega@pangea.example','junior',
    ARRAY['mechanical','gwa_basic']::certification_type[],
-   ARRAY['general'], 'Almería', 400, FALSE, FALSE, FALSE, DATE '2023-09-18', 29.00),
+   ARRAY['general'], 'Almería', 400, FALSE, FALSE, FALSE, DATE '2023-09-18', 29.00, NULL),
 ('OP-015','Frankie','Sato','frankie.sato@pangea.example','junior',
    ARRAY['electrical','mechanical','gwa_basic']::certification_type[],
-   ARRAY['general'], 'Chur', 400, FALSE, FALSE, TRUE, DATE '2024-01-08', 30.00);
+   ARRAY['general'], 'Chur', 400, FALSE, FALSE, TRUE, DATE '2024-01-08', 30.00, NULL);
 
 -- ---------------------------------------------------------------------------
--- Operative schedules (standard Mon-Fri day shift; two cover the weekend)
+-- Operative schedules
 -- ---------------------------------------------------------------------------
-INSERT INTO operative_schedules (operative_id, effective_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday)
-SELECT operative_id, DATE '2026-01-01',
-       'day','day','day','day','day',
-       CASE WHEN operative_id IN (9, 14) THEN 'day'::shift_type ELSE 'off'::shift_type END,
-       CASE WHEN operative_id IN (9, 14) THEN 'day'::shift_type ELSE 'off'::shift_type END
-FROM maintenance_operatives;
+INSERT INTO operative_schedules (operative_id, effective_date, monday, tuesday, wednesday,
+                                 thursday, friday, saturday, sunday,
+                                 exception_dates, exception_reason)
+SELECT o.operative_id, DATE '2026-01-01', v.mon::shift_type, v.tue::shift_type, v.wed::shift_type,
+       v.thu::shift_type, v.fri::shift_type, v.sat::shift_type, v.sun::shift_type,
+       v.exceptions, v.reason
+FROM (VALUES
+    ('OP-001','day','day','day','day','on_call','off','off',
+        ARRAY[DATE '2026-10-08', DATE '2026-10-09'], 'GWO advanced refresher, Esbjerg'),
+    ('OP-002','off','day','day','day','day','day','off',
+        NULL::date[], NULL),
+    ('OP-003','day','day','day','day','day','off','off',
+        ARRAY[DATE '2026-10-01'], 'High-voltage recertification'),
+    ('OP-004','day','day','day','on_call','on_call','off','off',
+        NULL::date[], NULL),
+    ('OP-005','off','off','day','day','day','day','day',
+        NULL::date[], NULL),
+    ('OP-006','day','day','day','day','day','on_call','off',
+        NULL::date[], NULL),
+    ('OP-007','day','day','day','day','day','off','off',
+        NULL::date[], NULL),
+    ('OP-008','night','night','night','night','off','off','off',
+        NULL::date[], NULL),
+    ('OP-009','day','day','day','off','off','day','day',
+        NULL::date[], NULL),
+    ('OP-010','off','day','day','day','day','day','off',
+        ARRAY[DATE '2026-10-05'], 'Rope access reassessment'),
+    ('OP-011','day','day','day','day','day','off','on_call',
+        NULL::date[], NULL),
+    ('OP-012','off','off','night','night','night','night','night',
+        NULL::date[], NULL),
+    ('OP-013','day','day','day','day','day','off','off',
+        NULL::date[], NULL),
+    ('OP-014','day','day','day','off','off','day','day',
+        NULL::date[], NULL),
+    ('OP-015','day','day','day','day','off','off','off',
+        ARRAY[DATE '2026-10-12', DATE '2026-10-13'], 'GWO basic renewal, Chur')
+) AS v(code, mon, tue, wed, thu, fri, sat, sun, exceptions, reason)
+JOIN maintenance_operatives o ON o.employee_code = v.code;
+
+-- Fortnight overrides; supersede the base rota until end_date.
+INSERT INTO operative_schedules (operative_id, effective_date, end_date, monday, tuesday, wednesday,
+                                 thursday, friday, saturday, sunday, exception_reason)
+SELECT o.operative_id, DATE '2026-09-28', DATE '2026-10-11',
+       v.mon::shift_type, v.tue::shift_type, v.wed::shift_type, v.thu::shift_type,
+       v.fri::shift_type, v.sat::shift_type, v.sun::shift_type, v.reason
+FROM (VALUES
+    ('OP-002','night','night','night','night','off','off','off',
+        'Temporary night cover for the North Sea shutdown backlog'),
+    ('OP-009','off','off','day','day','day','day','day',
+        'Swapped onto the North Sea offshore rotation')
+) AS v(code, mon, tue, wed, thu, fri, sat, sun, reason)
+JOIN maintenance_operatives o ON o.employee_code = v.code;
 
 -- ---------------------------------------------------------------------------
--- Knowledge base (RAG). Embeddings are NULL here; populated later by the
--- OpenShift AI embedding pipeline.
+-- Knowledge base. Embeddings are NULL; nothing retrieves these yet.
 -- ---------------------------------------------------------------------------
 INSERT INTO knowledge_base (document_name, document_type, title, content, summary, tags, turbine_models) VALUES
 ('gearbox-oil-change.md','procedure','Gearbox oil change procedure',

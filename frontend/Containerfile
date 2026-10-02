@@ -5,6 +5,8 @@ FROM registry.access.redhat.com/ubi9/nginx-124:latest
 # Static assets go in the image's document root.
 COPY dashboard-app.html /opt/app-root/src/index.html
 COPY pange.png /opt/app-root/src/pange.png
+# Spoken welcome line, pre-rendered from Kokoro (bf_emma) — see README.
+COPY welcome.wav /opt/app-root/src/welcome.wav
 # Vendored public-domain (Natural Earth / world-atlas) map geometry, served same-origin.
 COPY countries-50m.json /opt/app-root/src/countries-50m.json
 

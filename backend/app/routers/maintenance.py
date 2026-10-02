@@ -20,10 +20,12 @@ async def list_work_orders(
     rows = await db.fetch(
         "SELECT w.work_order_number, w.title, w.work_type::text AS work_type, "
         "       w.priority::text AS priority, w.status::text AS status, "
-        "       t.turbine_code, s.site_name, w.scheduled_start "
+        "       t.turbine_code, s.site_name, w.scheduled_start, "
+        "       o.first_name || ' ' || o.last_name AS assigned_operative "
         "FROM work_orders w "
         "LEFT JOIN turbines t ON t.turbine_id = w.turbine_id "
         "LEFT JOIN sites s ON s.site_id = t.site_id "
+        "LEFT JOIN maintenance_operatives o ON o.operative_id = w.assigned_operative_id "
         "WHERE w.status = ANY($1::work_order_status[]) "
         "ORDER BY CASE w.priority "
         "           WHEN 'critical' THEN 0 WHEN 'high' THEN 1 "

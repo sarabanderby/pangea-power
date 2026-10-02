@@ -40,6 +40,10 @@ spec:
           value: '8080'
         - name: MLSERVER_MODELS_DIR
           value: /mnt/models
+        - name: OMP_NUM_THREADS
+          value: '4'
+        - name: OMP_WAIT_POLICY
+          value: ACTIVE
       image: 'registry.redhat.io/rhoai/odh-mlserver-rhel9@sha256:d76bea18afe7b361847babb7a8ebc51fdbcd8164435f1bcb971e1701ba1bc595'
       livenessProbe:
         failureThreshold: 6
@@ -116,7 +120,7 @@ spec:
       name: ''
       resources:
         limits:
-          cpu: '2'
+          cpu: '4'
           memory: 4Gi
         requests:
           cpu: '1'

@@ -91,22 +91,39 @@
         }
 
         .enter-button {
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-            border: none;
-            padding: 1.2rem 4rem;
-            font-size: 1.1rem;
-            color: white;
-            border-radius: 12px;
+            position: absolute;
+            bottom: 13%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(10, 25, 41, 0.28);
+            backdrop-filter: blur(14px) saturate(140%);
+            -webkit-backdrop-filter: blur(14px) saturate(140%);
+            border: 1px solid rgba(186, 230, 253, 0.35);
+            padding: 0.95rem 3.4rem;
+            font-size: 0.82rem;
+            font-family: inherit;
+            color: #e8f6ff;
+            border-radius: 999px;
             cursor: pointer;
-            font-weight: 600;
-            letter-spacing: 0.05rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 30px rgba(56, 189, 248, 0.4);
+            font-weight: 500;
+            letter-spacing: 0.22rem;
+            text-transform: uppercase;
+            box-shadow: 0 4px 24px rgba(8, 20, 35, 0.35);
+            transition: opacity 0.6s ease, background 0.3s ease,
+                        border-color 0.3s ease, box-shadow 0.3s ease,
+                        transform 0.3s ease;
         }
 
         .enter-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(56, 189, 248, 0.6);
+            background: rgba(56, 189, 248, 0.16);
+            border-color: rgba(186, 230, 253, 0.75);
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 8px 30px rgba(56, 189, 248, 0.28);
+        }
+
+        .enter-button:active {
+            transform: translateX(-50%) translateY(0);
+            background: rgba(56, 189, 248, 0.24);
         }
 
         /* Main Layout */
@@ -496,7 +513,10 @@
             left: 0;
             width: 100%;
             height: 100%;
+            cursor: grab;
+            touch-action: none;   /* let the map take drag gestures, not the page */
         }
+        .world-map:active { cursor: grabbing; }
 
         .country {
             fill: rgba(56, 189, 248, 0.09);
@@ -532,6 +552,165 @@
         .map-tooltip .tt-title { font-weight: 600; margin-bottom: 0.3rem; }
         .map-tooltip .tt-row { color: #94a3b8; line-height: 1.5; }
         .map-tooltip .tt-row b { color: #e3f2fd; font-weight: 500; }
+
+        /* Site detail panel (click a map marker) */
+        .site-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 350px;
+            max-width: 84%;
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(180deg, rgba(11, 31, 56, 0.97) 0%, rgba(10, 21, 38, 0.98) 100%);
+            border-left: 1px solid rgba(56, 189, 248, 0.22);
+            box-shadow: -18px 0 44px rgba(0, 0, 0, 0.45);
+            transform: translateX(101%);
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .site-panel.open { transform: translateX(0); }
+
+        .sp-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.5rem;
+            padding: 0.9rem 0.9rem 0.7rem 1rem;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+        }
+        .sp-title { font-size: 0.95rem; font-weight: 600; color: #e3f2fd; }
+        .sp-sub {
+            font-size: 0.68rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.08rem;
+            margin-top: 0.2rem;
+        }
+        .sp-close {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 1.3rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 0.2rem;
+        }
+        .sp-close:hover { color: #e3f2fd; }
+
+        .sp-body {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 0.85rem 1rem 1.2rem;
+        }
+        .sp-section { margin-bottom: 1.05rem; }
+        .sp-section-title {
+            font-size: 0.64rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12rem;
+            color: #64748b;
+            margin-bottom: 0.45rem;
+        }
+        .sp-empty { font-size: 0.72rem; color: #475569; font-style: italic; }
+
+        .sp-banner {
+            background: rgba(248, 113, 113, 0.12);
+            border: 1px solid rgba(248, 113, 113, 0.4);
+            color: #fca5a5;
+            border-radius: 8px;
+            padding: 0.45rem 0.6rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .sp-output { display: flex; align-items: baseline; gap: 0.35rem; margin-bottom: 0.35rem; }
+        .sp-output b { font-size: 1.35rem; color: #e3f2fd; font-weight: 600; }
+        .sp-output span { font-size: 0.72rem; color: #64748b; }
+        .sp-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(56, 189, 248, 0.12);
+            overflow: hidden;
+        }
+        .sp-bar i {
+            display: block;
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+
+        .sp-counts { display: flex; gap: 0.4rem; margin-top: 0.7rem; }
+        .sp-count {
+            flex: 1;
+            text-align: center;
+            padding: 0.4rem 0.2rem;
+            border-radius: 8px;
+            background: rgba(56, 189, 248, 0.06);
+            border: 1px solid rgba(56, 189, 248, 0.12);
+        }
+        .sp-count b { display: block; font-size: 1rem; color: #e3f2fd; }
+        .sp-count span { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06rem; color: #64748b; }
+        .sp-count.ok b { color: #34d399; }
+        .sp-count.maint b { color: #fbbf24; }
+        .sp-count.off b { color: #f87171; }
+
+        .sp-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+        .sp-chip {
+            font-family: 'SFMono-Regular', ui-monospace, 'Menlo', monospace;
+            font-size: 0.64rem;
+            padding: 0.22rem 0.4rem;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            background: rgba(52, 211, 153, 0.14);
+            color: #6ee7b7;
+            transition: transform 0.12s ease, border-color 0.12s ease;
+        }
+        .sp-chip:hover { transform: translateY(-1px); border-color: currentColor; }
+        .sp-chip.maintenance { background: rgba(251, 191, 36, 0.14); color: #fcd34d; }
+        .sp-chip.offline { background: rgba(248, 113, 113, 0.14); color: #fca5a5; }
+        .sp-chip.sel { border-color: #38bdf8; color: #e3f2fd; }
+
+        .sp-chart-wrap { margin-top: 0.6rem; }
+        .sp-chart-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.68rem;
+            color: #94a3b8;
+            margin-bottom: 0.3rem;
+        }
+        .sp-chart-box { height: 110px; }
+
+        .sp-row {
+            padding: 0.45rem 0.55rem;
+            border-radius: 8px;
+            background: rgba(148, 163, 184, 0.06);
+            border-left: 2px solid rgba(148, 163, 184, 0.3);
+            margin-bottom: 0.35rem;
+        }
+        .sp-row.critical { border-left-color: #f87171; background: rgba(248, 113, 113, 0.08); }
+        .sp-row.warning { border-left-color: #fbbf24; background: rgba(251, 191, 36, 0.07); }
+        .sp-row-title { font-size: 0.74rem; color: #e3f2fd; line-height: 1.35; }
+        .sp-row-meta { font-size: 0.65rem; color: #64748b; margin-top: 0.18rem; }
+        .sp-row-action { font-size: 0.66rem; color: #94a3b8; margin-top: 0.25rem; font-style: italic; }
+
+        .sp-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .sp-btn {
+            flex: 1 1 auto;
+            padding: 0.45rem 0.6rem;
+            font-size: 0.7rem;
+            border-radius: 8px;
+            cursor: pointer;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #bae6fd;
+            transition: background 0.15s ease;
+        }
+        .sp-btn:hover { background: rgba(56, 189, 248, 0.2); }
 
         .map-overlay {
             position: absolute;
@@ -1253,20 +1432,20 @@
 
         /* AI Chat Section */
         .ai-chat-section {
-            flex: 1;
+            flex: none;
             min-height: 340px;
             display: flex;
             flex-direction: column;
-            border: none;
-            border-top: 1px solid rgba(56, 189, 248, 0.1);
-            border-radius: 0;
-            padding: 1.2rem 0.2rem 0;
-            background: transparent;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
         }
 
         .ai-body {
             flex: 1;
             min-height: 0;
+            max-height: 42vh;
             overflow-y: auto;
             overflow-x: hidden;
             margin-bottom: 1rem;
@@ -1290,6 +1469,15 @@
         }
         .chat-msg.user .chat-bubble { background: rgba(56, 189, 248, 0.12); color: #e3f2fd; }
         .chat-msg.assistant .chat-bubble { background: rgba(148, 163, 184, 0.1); color: #cbd5e1; }
+
+        .thinking-binary {
+            font-family: 'SFMono-Regular', ui-monospace, 'Menlo', monospace;
+            letter-spacing: 0.18em;
+            color: #38bdf8;
+            animation: binaryPulse 1.2s ease-in-out infinite;
+        }
+        .thinking-binary span { display: inline-block; transition: opacity 0.15s ease; }
+        @keyframes binaryPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
         .ai-header {
             display: flex;
@@ -1572,16 +1760,180 @@
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
+
+        /* Shift-handover tour */
+        .tour-offer {
+            position: fixed;
+            right: 1.5rem;
+            bottom: 1.5rem;
+            width: 310px;
+            z-index: 9000;
+            background: rgba(15, 23, 42, 0.94);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 14px;
+            padding: 1.15rem 1.25rem;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+            opacity: 0;
+            transform: translateY(150%);
+            transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.45s ease;
+        }
+
+        .tour-offer.show { opacity: 1; transform: translateY(0); }
+
+        .tour-eyebrow {
+            font-size: 0.6rem;
+            letter-spacing: 0.14rem;
+            text-transform: uppercase;
+            color: #38bdf8;
+            margin-bottom: 0.45rem;
+        }
+
+        .tour-heading {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #e3f2fd;
+            margin-bottom: 0.4rem;
+        }
+
+        .tour-text {
+            font-size: 0.78rem;
+            line-height: 1.55;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+
+        .tour-actions { display: flex; align-items: center; gap: 0.5rem; }
+        .tour-actions .tour-spacer { flex: 1; }
+
+        .tour-btn {
+            font-family: inherit;
+            font-size: 0.72rem;
+            letter-spacing: 0.04rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .tour-btn.primary {
+            background: rgba(56, 189, 248, 0.18);
+            border-color: rgba(56, 189, 248, 0.5);
+            color: #e8f6ff;
+            font-weight: 600;
+        }
+        .tour-btn.primary:hover { background: rgba(56, 189, 248, 0.3); }
+
+        .tour-btn.ghost { background: transparent; color: #64748b; }
+        .tour-btn.ghost:hover { color: #cbd5e1; border-color: rgba(148, 163, 184, 0.3); }
+
+        /* The 9999px ring is what dims everything except the cut-out. */
+        .tour-spot {
+            position: fixed;
+            z-index: 9500;
+            border-radius: 14px;
+            border: 1px solid rgba(56, 189, 248, 0.65);
+            box-shadow: 0 0 0 9999px rgba(5, 12, 22, 0.8);
+            pointer-events: none;
+            transition: top 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        left 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .tour-card {
+            position: fixed;
+            z-index: 9600;
+            width: 330px;
+            background: rgba(15, 23, 42, 0.97);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 14px;
+            padding: 1.15rem 1.25rem;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+            transition: top 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        left 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .tour-count { font-size: 0.68rem; color: #64748b; }
+        .tour-hidden { display: none !important; }
     </style>
 </head>
 <body>
     <!-- Welcome Screen -->
-    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #0a1929 url('pange.png') no-repeat center center; background-size: cover; display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 99999; opacity: 0; animation: slowFadeIn 3s ease-out forwards;" id="welcomeScreen">
-        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10, 25, 41, 0.3); z-index: 1;"></div>
-        <div style="position: relative; z-index: 2; text-align: center;">
-            <button style="padding: 18px 60px; font-size: 18px; cursor: pointer; background: linear-gradient(135deg, #38bdf8, #0ea5e9); border: none; color: white; border-radius: 12px; font-weight: 600; box-shadow: 0 8px 30px rgba(56, 189, 248, 0.5); opacity: 0; animation: buttonFadeIn 1s ease-out 2.5s forwards;" onclick="enterDashboard()">Enter</button>
-        </div>
+    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #0a1929 url('pange.png') no-repeat center center; background-size: cover; display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 99999; opacity: 0;" id="welcomeScreen">
+        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(10, 25, 41, 0.10) 0%, rgba(10, 25, 41, 0.14) 45%, rgba(10, 25, 41, 0.62) 100%); z-index: 1;"></div>
+        <button class="enter-button" id="enterButton" style="z-index: 2; opacity: 0;" onclick="enterDashboard()">Enter</button>
     </div>
+    <script>
+        // Own block, on purpose: the main script is one long unit, so an error
+        // anywhere in it would stop a listener registered at the bottom from
+        // ever running. This one cannot be starved by that.
+        var greetingAudio = new Audio('welcome.wav');
+        var greetingStarted = false;
+
+        function playGreeting() {
+            if (greetingStarted) return Promise.resolve();
+            greetingAudio.muted = false;
+            greetingAudio.volume = 1;
+            return greetingAudio.play()
+                .then(function () { greetingStarted = true; console.log('greeting: playing'); })
+                .catch(function (err) {
+                    // Muted playback needs no gesture. Start muted, then unmute —
+                    // some builds allow this where a plain play() is refused.
+                    greetingAudio.muted = true;
+                    return greetingAudio.play().then(function () {
+                        greetingAudio.muted = false;
+                        return new Promise(function (resolve, reject) {
+                            setTimeout(function () {
+                                if (greetingAudio.paused || greetingAudio.muted) {
+                                    greetingAudio.pause();
+                                    greetingAudio.currentTime = 0;
+                                    reject(err);
+                                } else {
+                                    greetingStarted = true;
+                                    console.log('greeting: playing (unmute path)');
+                                    resolve();
+                                }
+                            }, 80);
+                        });
+                    });
+                });
+        }
+
+        // Nothing appears until pange.png is actually decoded, otherwise the
+        // button and the flat background paint first and the photo pops in late.
+        (function () {
+            var splash = document.getElementById('welcomeScreen');
+            var btn = document.getElementById('enterButton');
+            var started = false;
+
+            function begin() {
+                if (started) return;
+                started = true;
+                console.log('greeting: attempting autoplay on load');
+                splash.style.animation = 'slowFadeIn 1.4s ease-out forwards';
+                setTimeout(function () { btn.style.opacity = '1'; }, 900);
+                playGreeting().catch(function (err) {
+                    console.warn('greeting did not autoplay:', err && err.name);
+                    ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
+                        document.addEventListener(ev, function retry() {
+                            document.removeEventListener(ev, retry, true);
+                            playGreeting().catch(function () {});
+                        }, true);
+                    });
+                });
+            }
+
+            var img = new Image();
+            img.onload = begin;
+            img.onerror = begin;
+            img.src = 'pange.png';
+            if (img.complete) begin();
+            setTimeout(begin, 5000);
+        })();
+    </script>
     <style>
         @keyframes slowFadeIn {
             from {
@@ -1591,14 +1943,12 @@
                 opacity: 1;
             }
         }
-        @keyframes buttonFadeIn {
+        @keyframes slowFadeOut {
             from {
-                opacity: 0;
-                transform: translateY(20px);
+                opacity: 1;
             }
             to {
-                opacity: 1;
-                transform: translateY(0);
+                opacity: 0;
             }
         }
     </style>
@@ -1624,6 +1974,7 @@
                 <span id="voiceStatus" class="voice-status"></span>
             </div>
             <div class="header-right">
+                <button class="schedule-btn" id="wakeToggle" onclick="toggleWake()">Wake: off</button>
                 <button class="schedule-btn" id="ttsToggle" onclick="toggleTts()">Voice: on</button>
                 <button class="schedule-btn" onclick="openSchedule()">Operator schedule</button>
             </div>
@@ -1695,8 +2046,43 @@
                     <span><span class="legend-glyph" style="color:#fbbf24;">■</span>Solar</span>
                     <span><span class="legend-glyph" style="color:#2dd4bf;">▲</span>Wave</span>
                 </div>
+
+                <div class="site-panel" id="sitePanel">
+                    <div class="sp-head">
+                        <div>
+                            <div class="sp-title" id="spTitle">—</div>
+                            <div class="sp-sub" id="spSub"></div>
+                        </div>
+                        <button class="sp-close" onclick="closeSitePanel()" aria-label="Close">×</button>
+                    </div>
+                    <div class="sp-body" id="spBody"></div>
+                </div>
             </div>
 
+
+            <!-- Pangea AI (center) -->
+            <div class="ai-chat-section">
+                <div class="ai-header">
+                    <div class="ai-title">
+                        <div class="ai-avatar">P</div>
+                        <div>
+                            <div class="ai-name">Pangea AI</div>
+                            <div class="ai-status">
+                                <span class="status-dot pending" id="aiStatusDot"></span>
+                                <span id="aiStatusText">Connecting…</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="cursor: pointer; color: #64748b;">⋯</div>
+                </div>
+
+                <div class="ai-body"></div>
+
+                <div class="ai-input">
+                    <input id="chatInput" type="text" placeholder="Ask a question or give a command..." onkeydown="if(event.key==='Enter')sendChat()">
+                    <button class="send-button" onclick="sendChat()">➤</button>
+                </div>
+            </div>
 
             <!-- Energy Grid -->
             <div class="energy-grid">
@@ -1746,30 +2132,6 @@
                 </div>
                 <div id="waveCards" class="solar-cards">
                     <div class="solar-empty">Connecting to wave forecast…</div>
-                </div>
-            </div>
-
-            <!-- Pangea AI (center) -->
-            <div class="ai-chat-section">
-                <div class="ai-header">
-                    <div class="ai-title">
-                        <div class="ai-avatar">P</div>
-                        <div>
-                            <div class="ai-name">Pangea AI</div>
-                            <div class="ai-status">
-                                <span class="status-dot pending" id="aiStatusDot"></span>
-                                <span id="aiStatusText">Connecting…</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="cursor: pointer; color: #64748b;">⋯</div>
-                </div>
-
-                <div class="ai-body"></div>
-
-                <div class="ai-input">
-                    <input id="chatInput" type="text" placeholder="Ask a question or give a command..." onkeydown="if(event.key==='Enter')sendChat()">
-                    <button class="send-button" onclick="sendChat()">➤</button>
                 </div>
             </div>
 
@@ -1878,7 +2240,7 @@
                 <div style="margin-bottom: 1rem;">
                     <div class="priority-badge high">High priority</div>
                     <div class="turbine-id" style="margin-top: 0.8rem;">Turbine T-104</div>
-                    <div class="turbine-location">North Sea Offshore</div>
+                    <div class="turbine-location">Blavand</div>
                     <div style="font-size: 0.8rem; color: #94a3b8; line-height: 1.5; margin: 0.6rem 0 1rem;">
                         Rising main-shaft vibration. Est. failure: 12–18 days.
                     </div>
@@ -1891,6 +2253,31 @@
     </div>
 
     <!-- Solar 5-day forecast modal -->
+    <!-- Shift-handover tour -->
+    <div class="tour-offer" id="tourOffer">
+        <div class="tour-eyebrow">Shift handover</div>
+        <div class="tour-heading">You have the watch</div>
+        <div class="tour-text">You're on as duty supervisor. Want a quick walkthrough of the fleet and what you can action from here?</div>
+        <div class="tour-actions">
+            <button class="tour-btn primary" onclick="startTour()">Start handover</button>
+            <button class="tour-btn ghost" onclick="dismissTourOffer()">Skip</button>
+        </div>
+    </div>
+
+    <div class="tour-spot tour-hidden" id="tourSpot"></div>
+    <div class="tour-card tour-hidden" id="tourCard">
+        <div class="tour-eyebrow" id="tourEyebrow">Shift handover</div>
+        <div class="tour-heading" id="tourTitle"></div>
+        <div class="tour-text" id="tourText"></div>
+        <div class="tour-actions">
+            <span class="tour-count" id="tourCount"></span>
+            <span class="tour-spacer"></span>
+            <button class="tour-btn ghost" onclick="endTour()">Skip</button>
+            <button class="tour-btn ghost" id="tourBack" onclick="tourGo(tourIdx - 1)">Back</button>
+            <button class="tour-btn primary" id="tourNext" onclick="tourGo(tourIdx + 1)">Next</button>
+        </div>
+    </div>
+
     <div class="solar-modal-backdrop" id="solarModal" onclick="if(event.target===this)closeSolarForecast()">
         <div class="solar-modal">
             <div class="solar-modal-head">
@@ -1976,6 +2363,8 @@
         // pangea-api Service. When opened as a local file this simply fails and the
         // static demo values remain (graceful fallback).
         const API_BASE = '/api';
+        const SESSION_ID = (crypto.randomUUID ? crypto.randomUUID()
+                            : String(Date.now()) + '-' + Math.random().toString(16).slice(2));
         let vibrationChart = null;
 
         // Voice capture -> /api/voice/transcribe -> Pangea AI chat input.
@@ -1988,9 +2377,27 @@
         let audioCtx = null, vadAnalyser = null, vadRaf = null;
         let vadSpeechSeen = false, vadSilenceStart = 0, vadStartedAt = 0;
         const VAD_THRESHOLD = 0.015;   // RMS above this counts as speech
-        const VAD_SILENCE_MS = 1300;   // trailing silence that ends a turn
+        const VAD_SILENCE_MS = 650;    // trailing silence that ends a turn
         const VAD_MAX_MS = 15000;      // hard cap on one utterance
         const VAD_NOSPEECH_MS = 7000;  // silence with no speech -> end conversation
+
+        // Wake word: always-listening loop transcribes bursts and only reacts to "Pangea".
+        let wakeMode = false;          // armed and looping
+        let awake = false;             // heard "Pangea" -> conversing without repeating it
+        let wakeIdleTimer = null;      // sleeps the session after silence
+        let voiceCancel = false;       // discard the in-flight burst (e.g. wake turned off)
+        const WAKE_RE = /\b(?:pan\s?g(?:a?e|i|ai)a|panj[ei]a|pandia)\b[\s,.:;!?-]*/i;
+        const DISMISS_RE = /^(?:no|nope|nah|no thanks?|nothing|that'?s all|that will be all|we'?re done|i'?m done|all done|stand ?by|goodbye|bye|dismiss(?:ed)?)[\s.!]*$/i;
+        const WAKE_IDLE_MS = 60000;    // silence this long -> back to sleep, say "Pangea" again
+
+        function armWakeIdle() {
+            clearTimeout(wakeIdleTimer);
+            wakeIdleTimer = setTimeout(() => {
+                awake = false;
+                if (wakeMode) setVoiceStatus('Listening for “Pangea”…');
+            }, WAKE_IDLE_MS);
+        }
+        function clearWakeIdle() { clearTimeout(wakeIdleTimer); wakeIdleTimer = null; }
 
         function setVoiceStatus(msg) {
             const el = document.getElementById('voiceStatus');
@@ -2016,9 +2423,49 @@
         // Clicking the mic starts (and joins) a hands-free conversation; clicking
         // again while listening ends it.
         function toggleVoice() {
+            if (wakeMode) {
+                // Manual trigger while armed: wake now without saying the word.
+                awake = true;
+                armWakeIdle();
+                wakeBeep();
+                setVoiceStatus('Yes? Ask your question…');
+                if (!isRecording) startListening();
+                return;
+            }
             if (isRecording) { conversationMode = false; stopVoice(); return; }
             conversationMode = true;
             startListening();
+        }
+
+        function toggleWake() {
+            wakeMode = !wakeMode;
+            awake = false;
+            clearWakeIdle();
+            const btn = document.getElementById('wakeToggle');
+            if (btn) btn.textContent = wakeMode ? 'Wake: on' : 'Wake: off';
+            if (wakeMode) {
+                voiceCancel = false;
+                if (!isRecording) startListening();
+                else setVoiceStatus('Listening for “Pangea”…');
+            } else {
+                voiceCancel = true;
+                if (isRecording) stopVoice();
+                setVoiceStatus('');
+            }
+        }
+
+        function wakeBeep() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.frequency.value = 660;
+                gain.gain.value = 0.06;
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.12);
+                osc.onended = () => { try { ctx.close(); } catch (e) {} };
+            } catch (e) {}
         }
 
         async function startListening() {
@@ -2043,7 +2490,9 @@
                 mediaRecorder.start();
                 isRecording = true;
                 setVoiceButton('recording');
-                setVoiceStatus(conversationMode ? 'Listening… (click to end)' : 'Listening… click Stop when done.');
+                if (wakeMode && awake) setVoiceStatus('Listening…');
+                else if (wakeMode) setVoiceStatus('Listening for “Pangea”…');
+                else setVoiceStatus(conversationMode ? 'Listening… (click to end)' : 'Listening… click Stop when done.');
                 startVad(stream);
             } catch (err) {
                 conversationMode = false;
@@ -2104,30 +2553,72 @@
 
         // Re-open the mic for the next turn once Pangea has finished replying.
         function maybeRelisten() {
-            if (conversationMode && !isRecording) {
-                setTimeout(() => { if (conversationMode && !isRecording) startListening(); }, 350);
+            if ((conversationMode || wakeMode) && !isRecording) {
+                setTimeout(() => { if ((conversationMode || wakeMode) && !isRecording) startListening(); }, 350);
             }
         }
 
         async function sendAudio(blob, hadSpeech = true) {
-            // Silence with no speech = the user is done talking; leave conversation.
-            if (!hadSpeech && conversationMode) {
-                conversationMode = false;
+            // Wake toggled off mid-burst: throw this clip away.
+            if (voiceCancel) { voiceCancel = false; setVoiceButton('idle'); setVoiceStatus(''); return; }
+
+            // Nothing was said this burst.
+            if (!hadSpeech) {
                 setVoiceButton('idle');
+                if (wakeMode) {
+                    // Stay in the current state; the idle timer decides when to sleep.
+                    setVoiceStatus(awake ? 'Listening…' : 'Listening for “Pangea”…');
+                    maybeRelisten();
+                    return;
+                }
+                if (conversationMode) { conversationMode = false; setVoiceStatus(''); return; }
                 setVoiceStatus('');
                 return;
             }
             try {
                 const form = new FormData();
                 form.append('audio', blob, 'clip.webm');
+                const t0 = performance.now();
                 const res = await fetch(API_BASE + '/voice/transcribe', { method: 'POST', body: form });
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
                 const text = (data.text || '').trim();
+                console.log('wake: mic deaf for', Math.round(performance.now() - t0), 'ms');
                 setVoiceButton('idle');
+
+                if (wakeMode) {
+                    if (awake) {
+                        // In session: speech is a command; no wake word needed.
+                        if (text && DISMISS_RE.test(text)) {
+                            // User is done: go to sleep, no model round-trip, no nagging.
+                            awake = false; clearWakeIdle(); stopSpeaking();
+                            setVoiceStatus('Standing by — say “Pangea” to wake me.');
+                            maybeRelisten();
+                        } else if (text) { armWakeIdle(); setVoiceStatus('“' + text + '”'); sendChat(text); }
+                        else { setVoiceStatus('Listening…'); maybeRelisten(); }
+                        return;
+                    }
+                    // Asleep: only "Pangea" wakes it.
+                    const m = text.match(WAKE_RE);
+                    if (!m) {
+                        console.log('wake: heard', JSON.stringify(text), '— no match');
+                        if (text) setVoiceStatus('Heard “' + text + '” — say “Pangea”.');
+                        maybeRelisten();
+                        return;
+                    }
+                    console.log('wake: matched', JSON.stringify(text));
+                    awake = true;
+                    armWakeIdle();
+                    const command = text.slice(m.index + m[0].length).trim();
+                    if (command) { setVoiceStatus('“' + command + '”'); sendChat(command); }
+                    else { wakeBeep(); setVoiceStatus('Yes? Ask your question…'); maybeRelisten(); }
+                    return;
+                }
+
+                // Explicit mic conversation / single shot.
                 if (text) {
                     setVoiceStatus('“' + text + '”');
-                    sendChat(text);   // reply streams, then speakReply() -> maybeRelisten()
+                    sendChat(text);   // reply streams, then speaker -> maybeRelisten()
                 } else if (conversationMode) {
                     setVoiceStatus('Didn’t catch that.');
                     maybeRelisten();
@@ -2135,8 +2626,9 @@
                     setVoiceStatus('Didn’t catch that — try again.');
                 }
             } catch (err) {
-                conversationMode = false;
                 setVoiceButton('idle');
+                if (wakeMode) { setVoiceStatus(awake ? 'Listening…' : 'Listening for “Pangea”…'); maybeRelisten(); return; }
+                conversationMode = false;
                 setVoiceStatus('Transcription failed. Is the model up?');
             }
         }
@@ -2147,6 +2639,57 @@
         // Running conversation for multi-turn context. Only successful turns are
         // kept; the backend replays the last few into each request.
         let chatHistory = [];   // [{role:'user'|'assistant', content}]
+        let siteByCode = {};
+
+        function siteSnapshot(s, turbines) {
+            if (!s) return null;
+            const r = v => (v == null ? null : Math.round(v * 10) / 10);
+            const type = siteType(s);
+            const wind = windBySite[s.site_code];
+            const pred = (type.label === 'Wave' ? waveBySite : solarBySite)[s.site_code];
+            const isTurbineSite = s.turbine_count > 0;
+
+            const liveMw = isTurbineSite
+                ? (s.live_output_mw || 0)
+                : (pred ? pred.actual_now_kw / 1000 : 0);
+            let ratedKw = s.capacity_kw || 0;
+            if (!ratedKw && turbines && turbines.length) {
+                ratedKw = turbines.reduce((a, t) => a + (t.rated_power_kw || 0), 0);
+            }
+
+            const snap = {
+                code: s.site_code, name: s.site_name, energy_type: type.label,
+                city: s.nearest_city, country: s.country, status: s.status,
+                live_output_mw: r(liveMw),
+                rated_capacity_mw: ratedKw ? r(ratedKw / 1000) : null
+            };
+            if (isTurbineSite) {
+                snap.turbines = {
+                    total: s.turbine_count, operational: s.operational,
+                    maintenance: s.maintenance, offline: s.offline
+                };
+            }
+            if (wind) {
+                snap.wind_ms = wind.wind_speed_ms;
+                snap.gust_ms = wind.gust_ms;
+                snap.cutout_ms = wind.cutout_ms;
+                snap.shutdown = wind.shutdown;
+            }
+            if (pred) {
+                snap.predicted_now_mw = r((pred.predicted_now_kw || 0) / 1000);
+                snap.residual_pct = pred.residual_pct;
+                if (pred.cloud_cover_pct != null) snap.cloud_cover_pct = r(pred.cloud_cover_pct);
+            }
+            snap.open_alerts = (activeAlerts || [])
+                .filter(a => a.site_name === s.site_name)
+                .map(a => ({ title: a.title, severity: a.severity, turbine: a.turbine_code }));
+            snap.scheduled_work = (maintenanceTasks || [])
+                .filter(t => t.site_name === s.site_name)
+                .map(t => ({ title: t.title, priority: t.priority, status: t.status,
+                             turbine: t.turbine_code, scheduled_start: t.scheduled_start,
+                             assigned_operative: t.assigned_operative }));
+            return snap;
+        }
 
         function buildUiContext() {
             const r = v => (v == null ? null : Math.round(v * 10) / 10);
@@ -2159,6 +2702,7 @@
             return {
                 view: openForecast ? 'forecast_modal' : 'dashboard',
                 open_forecast: openForecast,
+                open_site: siteSnapshot(sitePanelSite, sitePanelTurbines),
                 totals_mw: {
                     wind: r(windOutputMw), solar: r(solarOutputMw), wave: r(waveOutputMw),
                     total: r((windOutputMw || 0) + (solarOutputMw || 0) + (waveOutputMw || 0))
@@ -2169,11 +2713,21 @@
                     irradiance_wm2: Math.round(s.irradiance_wm2 || 0)
                 })),
                 wave_sites: Object.values(waveBySite).map(site),
-                wind_sites: Object.values(windBySite).map(w => ({
-                    code: w.site_code, name: w.site_name, status: w.status,
-                    wind_ms: w.wind_speed_ms, gust_ms: w.gust_ms,
-                    cutout_ms: w.cutout_ms, shutdown: w.shutdown
-                })),
+                wind_sites: Object.values(windBySite).map(w => {
+                    const s = siteByCode[w.site_code] || {};
+                    return {
+                        code: w.site_code, name: w.site_name, status: w.status,
+                        country: s.country, city: s.nearest_city,
+                        live_output_mw: r(s.live_output_mw),
+                        rated_capacity_mw: s.capacity_kw ? r(s.capacity_kw / 1000) : null,
+                        turbines_total: s.turbine_count,
+                        turbines_operational: s.operational,
+                        turbines_maintenance: s.maintenance,
+                        turbines_offline: s.offline,
+                        wind_ms: w.wind_speed_ms, gust_ms: w.gust_ms,
+                        cutout_ms: w.cutout_ms, shutdown: w.shutdown
+                    };
+                }),
                 active_alerts: (activeAlerts || []).slice(0, 10).map(a => ({
                     title: a.title, severity: a.severity,
                     turbine: a.turbine_code, site: a.site_name
@@ -2188,6 +2742,31 @@
             };
         }
 
+        function startThinking(bubble) {
+            bubble.textContent = '';
+            const ind = document.createElement('span');
+            ind.className = 'thinking-binary';
+            const N = 16;
+            for (let i = 0; i < N; i++) {
+                const d = document.createElement('span');
+                d.textContent = Math.random() < 0.5 ? '0' : '1';
+                ind.appendChild(d);
+            }
+            bubble.appendChild(ind);
+            const digits = ind.children;
+            const timer = setInterval(() => {
+                for (let i = 0; i < digits.length; i++) {
+                    if (Math.random() < 0.35) {
+                        digits[i].textContent = Math.random() < 0.5 ? '0' : '1';
+                        digits[i].style.opacity = (0.3 + Math.random() * 0.7).toFixed(2);
+                    }
+                }
+            }, 110);
+            return () => clearInterval(timer);
+        }
+
+        // Reverse-chronological: newest message goes to the top, nearest the map,
+        // so a reply sits above the question that prompted it.
         function appendChat(role, text) {
             const body = document.querySelector('.ai-body');
             const wrap = document.createElement('div');
@@ -2197,24 +2776,28 @@
             bubble.className = 'chat-bubble';
             bubble.textContent = text;
             wrap.appendChild(bubble);
-            body.appendChild(wrap);
-            body.scrollTop = body.scrollHeight;
+            body.insertBefore(wrap, body.firstChild);
+            body.scrollTop = 0;
             return bubble;
         }
 
         async function sendChat(text) {
             const input = document.getElementById('chatInput');
-            const msg = (text != null ? text : (input ? input.value : '')).trim();
+            let msg = (text != null ? text : (input ? input.value : '')).trim();
+            msg = msg.replace(WAKE_RE, '').trim();   // voice==text: drop the "Pangea," address
             if (!msg) return;
             if (input && text == null) input.value = '';
             appendChat('user', msg);
-            const bubble = appendChat('assistant', '…');
+            const bubble = appendChat('assistant', '');
+            const stopThinking = startThinking(bubble);
             const body = document.querySelector('.ai-body');
+            const speaker = ttsEnabled ? startStreamingSpeech() : null;
+            let spokenBuf = '';
             try {
                 const res = await fetch(API_BASE + '/agent/chat/stream', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: msg, ui_context: buildUiContext(), history: chatHistory })
+                    body: JSON.stringify({ message: msg, ui_context: buildUiContext(), history: chatHistory, session_id: SESSION_ID })
                 });
                 if (!res.ok || !res.body) throw new Error('HTTP ' + res.status);
 
@@ -2237,23 +2820,39 @@
                         try { payload = JSON.parse(dataLine.slice(5).trim()); } catch { continue; }
                         if (payload.error) { streamErr = payload.error; continue; }
                         if (payload.delta) {
-                            if (!reply) bubble.textContent = '';
+                            if (!reply) { stopThinking(); bubble.textContent = ''; }
                             reply += payload.delta;
                             bubble.textContent = reply;
-                            body.scrollTop = body.scrollHeight;
+                            body.scrollTop = 0;
+                            if (speaker) {
+                                spokenBuf += payload.delta;
+                                let r;
+                                while ((r = nextSentence(spokenBuf))) {
+                                    speaker.push(r.sentence);
+                                    spokenBuf = r.rest;
+                                }
+                            }
                         }
                     }
                 }
 
                 reply = reply.trim();
-                if (!reply) { bubble.textContent = streamErr || '(no response)'; return; }
+                if (!reply) {
+                    stopThinking();
+                    bubble.textContent = streamErr || '(no response)';
+                    if (speaker) speaker.end(); else maybeRelisten();
+                    return;
+                }
                 bubble.textContent = reply;
                 // Remember this turn and cap growth (backend replays the last 6).
                 chatHistory.push({ role: 'user', content: msg }, { role: 'assistant', content: reply });
                 if (chatHistory.length > 12) chatHistory = chatHistory.slice(-12);
-                speakReply(reply);
+                if (speaker) { speaker.push(spokenBuf); speaker.end(); } else { maybeRelisten(); }
             } catch (e) {
+                stopThinking();
                 bubble.textContent = 'Pangea is offline right now — the assistant model isn’t deployed yet.';
+                stopSpeaking();
+                maybeRelisten();
             }
         }
 
@@ -2266,15 +2865,11 @@
         // permission on the reused element so later async replies can speak (Safari).
         const TTS_SILENCE = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
 
+        let ttsGen = 0;
+        let ttsEndCurrent = null;
+
         function getTtsEl() {
-            if (!ttsAudioEl) {
-                ttsAudioEl = new Audio();
-                ttsAudioEl.addEventListener('ended', () => {
-                    if (ttsObjectUrl) { URL.revokeObjectURL(ttsObjectUrl); ttsObjectUrl = null; }
-                    maybeRelisten();
-                });
-                ttsAudioEl.addEventListener('error', () => maybeRelisten());
-            }
+            if (!ttsAudioEl) ttsAudioEl = new Audio();
             return ttsAudioEl;
         }
 
@@ -2294,7 +2889,9 @@
             document.addEventListener(ev, unlockTts, true));
 
         function stopSpeaking() {
+            ttsGen++;
             if (ttsAudioEl) { ttsAudioEl.pause(); ttsAudioEl.currentTime = 0; }
+            if (ttsEndCurrent) ttsEndCurrent();
             if (ttsObjectUrl) { URL.revokeObjectURL(ttsObjectUrl); ttsObjectUrl = null; }
         }
 
@@ -2305,37 +2902,249 @@
             if (btn) btn.textContent = ttsEnabled ? 'Voice: on' : 'Voice: off';
         }
 
-        async function speakReply(text) {
-            if (!ttsEnabled || !text) { maybeRelisten(); return; }
-            try {
-                const res = await fetch(API_BASE + '/voice/speak', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text }),
-                });
-                if (!res.ok) { maybeRelisten(); return; }
-                const blob = await res.blob();
-                stopSpeaking();
-                const el = getTtsEl();
-                ttsObjectUrl = URL.createObjectURL(blob);
-                el.src = ttsObjectUrl;
+        function nextSentence(buf) {
+            const m = buf.match(/^([\s\S]*?[.!?…]+["')\]]*)\s+/);
+            if (!m) return null;
+            return { sentence: m[1].trim(), rest: buf.slice(m[0].length) };
+        }
+
+        async function fetchSpeech(text) {
+            const res = await fetch(API_BASE + '/voice/speak', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text }),
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return await res.blob();
+        }
+
+        function playBlob(el, blob) {
+            return new Promise((resolve) => {
+                const url = URL.createObjectURL(blob);
+                ttsObjectUrl = url;
+                const done = () => {
+                    el.removeEventListener('ended', done);
+                    el.removeEventListener('error', done);
+                    if (ttsObjectUrl === url) { URL.revokeObjectURL(url); ttsObjectUrl = null; }
+                    ttsEndCurrent = null;
+                    resolve();
+                };
+                ttsEndCurrent = done;
+                el.addEventListener('ended', done);
+                el.addEventListener('error', done);
+                el.src = url;
                 el.muted = false;
-                el.play().catch(() => maybeRelisten());
-            } catch (e) {
-                console.warn('speakReply failed:', e.message);
-                maybeRelisten();
+                el.play().catch(() => done());
+            });
+        }
+
+        function startStreamingSpeech() {
+            stopSpeaking();
+            const gen = ++ttsGen;
+            const el = getTtsEl();
+            const queue = [];
+            let waiter = null;
+            let producerDone = false;
+
+            function push(t) {
+                t = (t || '').trim();
+                if (!t) return;
+                queue.push(t);
+                if (waiter) { const w = waiter; waiter = null; w(); }
             }
+            function end() {
+                producerDone = true;
+                if (waiter) { const w = waiter; waiter = null; w(); }
+            }
+            async function nextText() {
+                while (!queue.length && !producerDone) {
+                    await new Promise(r => { waiter = r; });
+                }
+                return queue.length ? queue.shift() : null;
+            }
+            async function run() {
+                try {
+                    const first = await nextText();
+                    if (first == null) return;
+                    let fetchP = fetchSpeech(first).catch(() => null);
+                    while (fetchP) {
+                        const blob = await fetchP;
+                        if (gen !== ttsGen) return;
+                        const playP = blob ? playBlob(el, blob) : Promise.resolve();
+                        const upcoming = await nextText();
+                        fetchP = upcoming != null ? fetchSpeech(upcoming).catch(() => null) : null;
+                        await playP;
+                        if (gen !== ttsGen) return;
+                    }
+                } finally {
+                    if (gen === ttsGen) maybeRelisten();
+                }
+            }
+            run();
+            return { push, end };
         }
 
         // Reset multi-turn memory (e.g. to start a fresh conversation).
         function resetChat() { chatHistory = []; }
 
-        // Enter dashboard function
+        // greetingAudio / playGreeting() are defined in their own block next to
+        // the welcome screen so the greeting starts at parse time.
+        let dashboardEntered = false;
         function enterDashboard() {
-            document.getElementById('welcomeScreen').style.display = 'none';
+            if (dashboardEntered) return;
+            dashboardEntered = true;
+
+            const welcome = document.getElementById('welcomeScreen');
+            const btn = document.getElementById('enterButton');
+            if (btn) { btn.style.opacity = '0'; btn.style.pointerEvents = 'none'; }
+
+            // This click is the first gesture when autoplay was refused, so it is
+            // also where the greeting starts. It then plays on over the dashboard
+            // rather than being waited for or cut short.
+            if (!greetingStarted) playGreeting().catch(() => {});
+
             document.getElementById('appContainer').classList.add('active');
             setTimeout(initializeCharts, 200);
+
+            if (welcome) {
+                welcome.style.animation = 'slowFadeOut 1.2s ease forwards';
+                setTimeout(() => { welcome.style.display = 'none'; }, 1300);
+            }
+
+            setTimeout(showTourOffer, 1600);
         }
+
+        const TOUR_STEPS = [
+            {
+                sel: null,
+                title: 'You have the watch',
+                text: "You're the duty supervisor for the Pangea fleet — wind, solar and wave sites across northern Europe. This is the short version of the handover."
+            },
+            {
+                sel: '.left-sidebar',
+                title: 'Fleet at a glance',
+                text: 'Turbines by status, and live output against rated capacity. Everything here refreshes every thirty seconds on its own.'
+            },
+            {
+                sel: '.map-section',
+                title: 'Your sites',
+                text: 'Each dot is a site — the shape tells you the energy type, a red dashed ring means it is shut down for storm protection. Click a dot for its turbines, open alerts and scheduled work. Drag to pan, scroll to zoom.'
+            },
+            {
+                sel: '.ai-chat-section',
+                title: 'Ask Pangea',
+                text: 'Pangea reads the same live fleet data you are looking at. Ask about a specific site, an alert, or what needs your attention this shift.'
+            },
+            {
+                sel: '#wakeToggle',
+                title: 'Hands-free',
+                text: 'Switch Wake on and say "Pangea" followed by your question — handy when you are away from the keyboard. Voice controls whether she answers out loud.'
+            },
+            {
+                sel: '.right-sidebar',
+                title: 'Alerts and work orders',
+                text: 'Active alerts up top, open maintenance below. Operator schedule is where you raise a task and assign it to someone on shift.'
+            },
+            {
+                sel: '#solarCards',
+                title: 'Predicted output',
+                text: 'Model forecasts against live readings. A wide gap between predicted and actual is usually worth investigating.'
+            }
+        ];
+
+        let tourIdx = -1;
+
+        function showTourOffer() {
+            const el = document.getElementById('tourOffer');
+            if (el && tourIdx < 0) el.classList.add('show');
+        }
+
+        function dismissTourOffer() {
+            const el = document.getElementById('tourOffer');
+            if (el) el.classList.remove('show');
+        }
+
+        function startTour() {
+            dismissTourOffer();
+            tourGo(0, 1);
+        }
+
+        function endTour() {
+            tourIdx = -1;
+            document.getElementById('tourSpot').classList.add('tour-hidden');
+            document.getElementById('tourCard').classList.add('tour-hidden');
+        }
+
+        function tourGo(n, dir) {
+            dir = dir || (n >= tourIdx ? 1 : -1);
+            if (n < 0 || n >= TOUR_STEPS.length) { endTour(); return; }
+
+            const step = TOUR_STEPS[n];
+            const target = step.sel ? document.querySelector(step.sel) : null;
+            // Sidebars are display:none on narrow viewports — step over anything
+            // that isn't actually on screen rather than spotlighting nothing.
+            if (step.sel && (!target || target.offsetWidth === 0)) { tourGo(n + dir, dir); return; }
+
+            tourIdx = n;
+            const spot = document.getElementById('tourSpot');
+            const card = document.getElementById('tourCard');
+
+            document.getElementById('tourTitle').textContent = step.title;
+            document.getElementById('tourText').textContent = step.text;
+            document.getElementById('tourCount').textContent = (n + 1) + ' of ' + TOUR_STEPS.length;
+            document.getElementById('tourBack').classList.toggle('tour-hidden', n === 0);
+            document.getElementById('tourNext').textContent =
+                n === TOUR_STEPS.length - 1 ? 'Done' : 'Next';
+            card.classList.remove('tour-hidden');
+
+            if (!target) {
+                spot.classList.add('tour-hidden');
+                card.style.top = '50%';
+                card.style.left = '50%';
+                card.style.transform = 'translate(-50%, -50%)';
+                return;
+            }
+
+            card.style.transform = 'none';
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => positionTour(target, spot, card), 340);
+        }
+
+        function positionTour(target, spot, card) {
+            const r = target.getBoundingClientRect();
+            const pad = 8;
+            spot.classList.remove('tour-hidden');
+            spot.style.top = (r.top - pad) + 'px';
+            spot.style.left = (r.left - pad) + 'px';
+            spot.style.width = (r.width + pad * 2) + 'px';
+            spot.style.height = (r.height + pad * 2) + 'px';
+
+            const cw = card.offsetWidth, ch = card.offsetHeight, gap = 16;
+            let top = r.bottom + gap;
+            if (top + ch > window.innerHeight - 12) top = r.top - ch - gap;
+            if (top < 12) top = Math.max(12, (window.innerHeight - ch) / 2);
+            let left = r.left + r.width / 2 - cw / 2;
+            left = Math.max(12, Math.min(left, window.innerWidth - cw - 12));
+            card.style.top = top + 'px';
+            card.style.left = left + 'px';
+        }
+
+        document.addEventListener('keydown', (ev) => {
+            if (tourIdx < 0) return;
+            if (ev.key === 'Escape') endTour();
+            else if (ev.key === 'ArrowRight') tourGo(tourIdx + 1, 1);
+            else if (ev.key === 'ArrowLeft') tourGo(tourIdx - 1, -1);
+        });
+
+        window.addEventListener('resize', () => {
+            if (tourIdx < 0) return;
+            const step = TOUR_STEPS[tourIdx];
+            const target = step.sel ? document.querySelector(step.sel) : null;
+            if (target) {
+                positionTour(target, document.getElementById('tourSpot'),
+                             document.getElementById('tourCard'));
+            }
+        });
 
         // Debug image loading
         window.addEventListener('load', function() {
@@ -2801,7 +3610,7 @@
         const CAL_WD_KEY = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
         const CAL_DAYS = 14;
 
-        async function openSchedule() {
+        async function openSchedule(siteName) {
             document.getElementById('scheduleModal').classList.add('open');
             document.getElementById('schedMsg').textContent = '';
             try {
@@ -2809,7 +3618,7 @@
                     apiGet('/turbines'),
                     apiGet('/operators'),
                 ]);
-                populateTurbines(turbines);
+                populateTurbines(turbines, siteName);
                 populateOperators(operators);
                 renderCalendar(operators);
             } catch (e) {
@@ -2822,9 +3631,13 @@
             document.getElementById('scheduleModal').classList.remove('open');
         }
 
-        function populateTurbines(turbines) {
+        function populateTurbines(turbines, siteName) {
             const sel = document.getElementById('schedTurbine');
-            sel.innerHTML = turbines.map(t =>
+            // Opened from a map marker: narrow to that site, but fall back to the
+            // whole fleet rather than an empty dropdown.
+            const atSite = siteName ? turbines.filter(t => t.site_name === siteName) : [];
+            const list = atSite.length ? atSite : turbines;
+            sel.innerHTML = list.map(t =>
                 `<option value="${t.turbine_code}">${t.turbine_code} — ${t.site_name}</option>`).join('');
         }
 
@@ -2933,6 +3746,10 @@
         let mapResizeTimer = null;
         let mapZoom = null;                        // d3.zoom behavior
         let mapZoomTransform = null;               // persists zoom across redraws
+        let mapDragged = false;                    // true once a pan actually moved
+        let mapSiteLayer = null;                   // <g> holding the site markers
+        let mapProjection = null;                  // set once the map is built
+        let mapBuilding = false;                   // guards against overlapping builds
 
         // Markers encode ENERGY TYPE (not health): distinct shape + colour so
         // wind / solar / wave read clearly, incl. for colour-blind viewers.
@@ -3001,12 +3818,248 @@
             document.getElementById('mapTooltip').style.opacity = 0;
         }
 
+        // ---- Site detail panel (click a marker) ---------------------------
+
+        let sitePanelSite = null;
+        let sitePanelTurbines = null;
+        let sitePanelChart = null;
+
+        function esc(v) {
+            return String(v == null ? '' : v).replace(/[&<>"]/g,
+                c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        }
+
+        function closeSitePanel() {
+            document.getElementById('sitePanel').classList.remove('open');
+            sitePanelSite = null;
+            sitePanelTurbines = null;
+            if (sitePanelChart) { sitePanelChart.destroy(); sitePanelChart = null; }
+        }
+
+        function spWhen(iso) {
+            if (!iso) return 'unscheduled';
+            const d = new Date(iso);
+            return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) +
+                   ' ' + d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function openSitePanel(s) {
+            sitePanelSite = s;
+            sitePanelTurbines = null;
+            hideMapTip();
+            if (sitePanelChart) { sitePanelChart.destroy(); sitePanelChart = null; }
+            const type = siteType(s);
+            document.getElementById('spTitle').textContent = s.site_name;
+            document.getElementById('spSub').textContent =
+                [type.label, s.nearest_city, s.country].filter(Boolean).join(' · ');
+            document.getElementById('sitePanel').classList.add('open');
+            renderSitePanel(s, null);
+
+            // Turbine list is the one piece not already cached in the page.
+            if (s.turbine_count > 0) {
+                let turbines = [];
+                try {
+                    turbines = await apiGet('/turbines?site_code=' + encodeURIComponent(s.site_code));
+                } catch (e) {
+                    console.warn('site turbines failed:', e.message);
+                }
+                if (sitePanelSite === s) renderSitePanel(s, turbines);
+            }
+        }
+
+        function renderSitePanel(s, turbines) {
+            sitePanelTurbines = turbines;
+            const type = siteType(s);
+            const wind = windBySite[s.site_code];
+            const pred = (type.label === 'Wave' ? waveBySite : solarBySite)[s.site_code];
+            const isTurbineSite = s.turbine_count > 0;
+            let html = '';
+
+            if (wind && wind.shutdown) {
+                html += `<div class="sp-banner">SHUTDOWN — high wind ${wind.wind_speed_ms} m/s ` +
+                        `(cut-out ${wind.cutout_ms})</div>`;
+            }
+
+            // Live output against rated capacity. Wind sites carry no capacity_kw,
+            // so their rating is summed from the turbines once those arrive.
+            const liveMw = isTurbineSite
+                ? (s.live_output_mw || 0)
+                : (pred ? pred.actual_now_kw / 1000 : 0);
+            let ratedKw = s.capacity_kw || 0;
+            if (!ratedKw && turbines && turbines.length) {
+                ratedKw = turbines.reduce((a, t) => a + (t.rated_power_kw || 0), 0);
+            }
+            const ratedMw = ratedKw / 1000;
+            const pct = ratedMw > 0 ? Math.min(100, (liveMw / ratedMw) * 100) : 0;
+
+            html += '<div class="sp-section">';
+            html += `<div class="sp-output"><b>${liveMw.toFixed(1)}</b><span>MW live` +
+                    `${ratedMw ? ' of ' + ratedMw.toFixed(0) + ' MW rated' : ''}</span></div>`;
+            html += `<div class="sp-bar"><i style="width:${pct.toFixed(1)}%;background:${type.color};"></i></div>`;
+            if (pred) {
+                const delta = pred.status === 'underperforming'
+                    ? ' <b style="color:#fbbf24;">below plan</b>' : '';
+                html += `<div class="sp-row-meta">${(pred.predicted_now_kw / 1000).toFixed(1)} MW predicted${delta}</div>`;
+            } else if (wind && !wind.shutdown) {
+                html += `<div class="sp-row-meta">wind ${wind.wind_speed_ms} m/s · ` +
+                        `${esc(s.terrain)}</div>`;
+            }
+            if (isTurbineSite) {
+                html += `<div class="sp-counts">
+                    <div class="sp-count ok"><b>${s.operational}</b><span>Operational</span></div>
+                    <div class="sp-count maint"><b>${s.maintenance}</b><span>Maintenance</span></div>
+                    <div class="sp-count off"><b>${s.offline}</b><span>Offline</span></div>
+                </div>`;
+            }
+            html += '</div>';
+
+            if (isTurbineSite) {
+                html += '<div class="sp-section"><div class="sp-section-title">Turbines</div>';
+                if (!turbines) {
+                    html += '<div class="sp-empty">Loading…</div>';
+                } else if (!turbines.length) {
+                    html += '<div class="sp-empty">No turbines returned for this site.</div>';
+                } else {
+                    html += '<div class="sp-chips">' + turbines.map(t =>
+                        `<button class="sp-chip ${esc(t.status)}" onclick="showTurbineTrend('${esc(t.turbine_code)}', this)" ` +
+                        `title="${esc(t.model)} · ${t.current_power_output_kw} kW · ${esc(t.status)}">` +
+                        `${esc(t.turbine_code)}</button>`).join('') + '</div>';
+                    html += `<div class="sp-chart-wrap" id="spChartWrap" style="display:none;">
+                        <div class="sp-chart-head"><span id="spChartTitle"></span><span id="spChartMeta"></span></div>
+                        <div class="sp-chart-box"><canvas id="spTurbineChart"></canvas></div>
+                    </div>`;
+                }
+                html += '</div>';
+            }
+
+            const alerts = (activeAlerts || []).filter(a => a.site_name === s.site_name);
+            html += `<div class="sp-section"><div class="sp-section-title">Open alerts (${alerts.length})</div>`;
+            html += alerts.length ? alerts.map(a => {
+                const sev = (a.severity === 'critical' || a.severity === 'emergency') ? 'critical' : 'warning';
+                return `<div class="sp-row ${sev}">
+                    <div class="sp-row-title">${esc(a.title)}</div>
+                    <div class="sp-row-meta">${esc(a.severity)}${a.turbine_code ? ' · ' + esc(a.turbine_code) : ''} · ${relativeTime(a.alert_time)}</div>
+                    ${a.recommended_action ? `<div class="sp-row-action">${esc(a.recommended_action)}</div>` : ''}
+                </div>`;
+            }).join('') : '<div class="sp-empty">No active alerts here.</div>';
+            html += '</div>';
+
+            const wos = (maintenanceTasks || []).filter(t => t.site_name === s.site_name);
+            html += `<div class="sp-section"><div class="sp-section-title">Scheduled work (${wos.length})</div>`;
+            html += wos.length ? wos.map(t => `
+                <div class="sp-row">
+                    <div class="sp-row-title">${esc(t.title)}</div>
+                    <div class="sp-row-meta">${esc(t.priority)} · ${esc(t.status)}${t.turbine_code ? ' · ' + esc(t.turbine_code) : ''} · ${spWhen(t.scheduled_start)}${t.assigned_operative ? ' · ' + esc(t.assigned_operative) : ''}</div>
+                </div>`).join('') : '<div class="sp-empty">No open work orders here.</div>';
+            html += '</div>';
+
+            html += '<div class="sp-section"><div class="sp-section-title">Actions</div><div class="sp-actions">';
+            if (type.label === 'Solar' || type.label === 'Wave') {
+                html += '<button class="sp-btn" onclick="spForecast()">5-day forecast</button>';
+            }
+            if (isTurbineSite) {
+                html += '<button class="sp-btn" onclick="spNewTask()">New task here</button>';
+            }
+            html += '<button class="sp-btn" onclick="spAskPangea()">Ask Pangea</button>';
+            html += '</div></div>';
+
+            document.getElementById('spBody').innerHTML = html;
+        }
+
+        async function showTurbineTrend(code, chip) {
+            const wrap = document.getElementById('spChartWrap');
+            if (!wrap) return;
+            document.querySelectorAll('#spBody .sp-chip').forEach(c => c.classList.remove('sel'));
+            if (chip) chip.classList.add('sel');
+            wrap.style.display = 'block';
+            document.getElementById('spChartTitle').textContent = code + ' · 48h vibration';
+            document.getElementById('spChartMeta').textContent = 'loading…';
+
+            let rows = [];
+            try {
+                rows = await apiGet('/turbines/' + encodeURIComponent(code) + '/readings?hours=48');
+            } catch (e) {
+                document.getElementById('spChartMeta').textContent = 'unavailable';
+                return;
+            }
+            if (!rows.length) {
+                document.getElementById('spChartMeta').textContent = 'no readings';
+                if (sitePanelChart) { sitePanelChart.destroy(); sitePanelChart = null; }
+                return;
+            }
+
+            const step = Math.max(1, Math.floor(rows.length / 60));
+            const sampled = rows.filter((_, i) => i % step === 0);
+            const peak = rows.reduce((m, r) => Math.max(m, r.anomaly_score || 0), 0);
+            document.getElementById('spChartMeta').textContent = 'peak anomaly ' + peak.toFixed(2);
+
+            const canvas = document.getElementById('spTurbineChart');
+            if (!canvas) return;
+            if (sitePanelChart) sitePanelChart.destroy();
+            sitePanelChart = new Chart(canvas.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: sampled.map(r => new Date(r.reading_time)
+                        .toLocaleTimeString(undefined, { hour: '2-digit' })),
+                    datasets: [{
+                        data: sampled.map(r => r.vibration_x_mms),
+                        borderColor: '#38bdf8',
+                        backgroundColor: 'rgba(56, 189, 248, 0.12)',
+                        borderWidth: 1.5,
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 0,
+                        pointHoverRadius: 3,
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 8 }, maxTicksLimit: 6 } },
+                        y: { grid: { color: 'rgba(56, 189, 248, 0.1)' }, ticks: { color: '#64748b', font: { size: 8 } } },
+                    },
+                },
+            });
+        }
+
+        function spForecast() {
+            if (!sitePanelSite) return;
+            openForecastModal(siteType(sitePanelSite).label.toLowerCase(), sitePanelSite.site_code);
+        }
+
+        function spNewTask() {
+            if (!sitePanelSite) return;
+            openSchedule(sitePanelSite.site_name);
+        }
+
+        function spAskPangea() {
+            if (!sitePanelSite) return;
+            sendChat('Give me a status summary for ' + sitePanelSite.site_name + '.');
+            const panel = document.querySelector('.ai-chat-section');
+            if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        document.addEventListener('keydown', (ev) => {
+            if (ev.key === 'Escape' && sitePanelSite) closeSitePanel();
+        });
+
         async function renderEuropeMap() {
             const svgEl = document.getElementById('europeMap');
             if (!svgEl || typeof d3 === 'undefined' || typeof topojson === 'undefined') return;
             const rect = svgEl.getBoundingClientRect();
             if (rect.width < 10 || rect.height < 10) return;   // not visible yet
+            if (mapBuilding) return;                           // a build is already in flight
+            mapBuilding = true;
+            try {
+                await buildEuropeMap(svgEl, rect);
+            } finally {
+                mapBuilding = false;
+            }
+        }
 
+        async function buildEuropeMap(svgEl, rect) {
             try {
                 if (!europeTopo) {
                     const res = await fetch('/countries-50m.json');
@@ -3038,42 +4091,28 @@
                 .data(land.features).join('path')
                 .attr('class', 'country').attr('d', path);
 
-            let sites = [];
-            try { sites = await apiGet('/sites'); } catch (e) { console.warn('loadSites failed:', e.message); }
-            document.getElementById('mapSub').textContent = (sites.length || 5) + ' sites • live';
-
-            const g = zoomLayer.append('g');
-            sites.forEach(s => {
-                if (s.latitude == null || s.longitude == null) return;
-                const p = projection([s.longitude, s.latitude]);
-                if (!p) return;
-                const type = siteType(s);
-                // A wind farm past its cut-out is stopped for storm protection —
-                // mark it red with a dashed ring so it reads as shut down.
-                const w = windBySite[s.site_code];
-                const isShutdown = !!(w && w.shutdown);
-                const color = isShutdown ? '#f87171' : type.color;
-                const r = 4 + Math.sqrt(s.turbine_count || 1) * 1.1;
-                const dot = g.append('g').attr('class', 'site-dot')
-                    .attr('transform', `translate(${p[0]},${p[1]})`);
-                dot.append('circle').attr('class', 'halo').attr('r', r).attr('fill', color)
-                    .style('--r', r + 'px').style('animation', 'sitePulse 2.4s ease-out infinite');
-                appendGlyph(dot, type.shape, r, color);
-                if (isShutdown) {
-                    dot.append('circle').attr('r', r + 4).attr('fill', 'none')
-                        .attr('stroke', '#f87171').attr('stroke-width', 1.5)
-                        .attr('stroke-dasharray', '2 2');
-                }
-                dot.on('mousemove', (ev) => showMapTip(ev, s)).on('mouseleave', hideMapTip);
-            });
+            mapSiteLayer = zoomLayer.append('g');
 
             // Wheel-zoom / drag-pan over the map, applied to the zoom layer.
             // Country borders and markers are counter-scaled so they stay crisp.
+            // Half a frame of slack on each side keeps dragging usable at k=1 while
+            // stopping the map being thrown clean out of view.
             mapZoom = d3.zoom()
                 .scaleExtent([1, 12])
-                .translateExtent([[0, 0], [w, h]])   // can't pan outside the frame
+                .translateExtent([[-w * 0.5, -h * 0.5], [w * 1.5, h * 1.5]])
                 .filter((ev) => !ev.button)          // allow wheel (no modifier needed)
+                .on('start', (ev) => {
+                    mapDragged = false;
+                    if (ev.sourceEvent && ev.sourceEvent.type === 'mousedown') {
+                        svg.style('cursor', 'grabbing');
+                        hideMapTip();
+                    }
+                })
+                .on('end', () => svg.style('cursor', 'grab'))
                 .on('zoom', (ev) => {
+                    // A pan that moved counts as a drag, so the mouseup at the end
+                    // of it doesn't read as a click on whatever is under the cursor.
+                    if (ev.sourceEvent && ev.sourceEvent.type === 'mousemove') mapDragged = true;
                     const t = ev.transform;
                     mapZoomTransform = t;
                     zoomLayer.attr('transform', t);
@@ -3084,19 +4123,84 @@
                     });
                 });
 
-            // Remember each marker's map position so we can re-anchor while scaling.
-            g.selectAll('.site-dot').attr('data-xy', function () {
-                const m = /translate\(([^)]+)\)/.exec(d3.select(this).attr('transform'));
-                return m ? m[1] : '0,0';
-            });
-
             svg.call(mapZoom);
             svg.style('cursor', 'grab');
+            svg.on('click', () => { if (!mapDragged) closeSitePanel(); });
 
-            // Reapply any prior zoom so the 30s refresh / resize doesn't reset it.
+            // Reapply any prior zoom so a resize rebuild doesn't reset the view.
             if (mapZoomTransform) {
                 svg.call(mapZoom.transform, mapZoomTransform);
             }
+
+            mapProjection = projection;
+            await refreshMapMarkers();
+        }
+
+        // Markers are a keyed data-join so the 30s refresh updates them in place
+        // instead of tearing the map down — that is what used to reset pan/zoom.
+        function drawMapSites(sites) {
+            (sites || []).forEach(s => { siteByCode[s.site_code] = s; });
+            if (!mapSiteLayer || !mapProjection) return;
+            const k = mapZoomTransform ? mapZoomTransform.k : 1;
+            const pts = sites.filter(s => s.latitude != null && s.longitude != null);
+
+            const join = mapSiteLayer.selectAll('.site-dot').data(pts, d => d.site_code);
+            join.exit().remove();
+            const entered = join.enter().append('g').attr('class', 'site-dot');
+            // The halo carries the CSS pulse; it is created once and only ever
+            // retuned, so the animation never restarts on refresh.
+            entered.append('circle').attr('class', 'halo').attr('fill', 'none');
+
+            entered.merge(join).each(function (s) {
+                const dot = d3.select(this);
+                const p = mapProjection([s.longitude, s.latitude]);
+                if (!p) return;
+                const type = siteType(s);
+                // A wind farm past its cut-out is stopped for storm protection —
+                // mark it red with a dashed ring so it reads as shut down.
+                const w = windBySite[s.site_code];
+                const isShutdown = !!(w && w.shutdown);
+                const color = isShutdown ? '#f87171' : type.color;
+                const r = 4 + Math.sqrt(s.turbine_count || 1) * 1.1;
+
+                dot.attr('data-xy', p[0] + ',' + p[1])
+                   .attr('transform', `translate(${p[0]},${p[1]}) scale(${1 / k})`);
+                dot.select('.halo').attr('r', r).attr('fill', color)
+                   .style('--r', r + 'px')
+                   .style('animation', 'sitePulse 2.4s ease-out infinite');
+
+                dot.selectAll('.core, .shutdown-ring').remove();
+                appendGlyph(dot, type.shape, r, color);
+                if (isShutdown) {
+                    dot.append('circle').attr('class', 'shutdown-ring')
+                        .attr('r', r + 4).attr('fill', 'none')
+                        .attr('stroke', '#f87171').attr('stroke-width', 1.5)
+                        .attr('stroke-dasharray', '2 2');
+                }
+
+                // Rebind so handlers close over the freshly fetched site object.
+                dot.on('mousemove', (ev) => showMapTip(ev, s))
+                   .on('mouseleave', hideMapTip)
+                   .on('click', (ev) => {
+                       ev.stopPropagation();
+                       if (!mapDragged) openSitePanel(s);
+                   });
+            });
+
+            document.getElementById('mapSub').textContent =
+                (pts.length || 5) + ' sites • live';
+        }
+
+        async function refreshMapMarkers() {
+            if (!mapProjection) return renderEuropeMap();
+            let sites = [];
+            try {
+                sites = await apiGet('/sites');
+            } catch (e) {
+                console.warn('loadSites failed:', e.message);
+                return;
+            }
+            drawMapSites(sites);
         }
 
         // Reflect real assistant availability in the header dot: green only when
@@ -3128,7 +4232,7 @@
             loadWave();
             checkAgentHealth();
             await loadWind();      // populate windBySite before the map paints shutdowns
-            renderEuropeMap();
+            refreshMapMarkers();   // update markers in place; never rebuilds the map
         }
 
         // Populate on load and refresh periodically.

@@ -4,12 +4,15 @@ Thin async orchestration layer between the PostgreSQL database and the dashboard
 UI. The UI talks only to this API; this API is the only component that holds DB
 credentials. ML inference (via OpenShift AI / KServe v2) will be wired in later.
 """
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import db
+from . import db, tracing
+
+logging.basicConfig(level=logging.INFO)
 from .config import settings
 from .routers import (
     agent, alerts, fleet, maintenance, operators, solar, turbines, voice, wave, wind,
@@ -19,6 +22,7 @@ from .routers import (
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await db.connect()
+    tracing.init()
     yield
     await db.disconnect()
 

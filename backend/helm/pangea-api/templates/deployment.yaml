@@ -14,6 +14,7 @@ spec:
       labels:
         app.kubernetes.io/name: pangea-api
     spec:
+      serviceAccountName: pangea-mlflow
       containers:
         - name: api
           image: "image-registry.openshift-image-registry.svc:5000/pangea-energy-and-power/pangea-api:latest"
@@ -53,6 +54,12 @@ spec:
               value: "http://granite4-predictor.pangea-energy-and-power.svc.cluster.local/v1/chat/completions"
             - name: AGENT_LLM_MODEL
               value: "granite4"
+            - name: MLFLOW_TRACKING_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: pangea-mlflow-token
+                  key: token
+                  optional: true
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
@@ -68,6 +75,10 @@ spec:
                 secretKeyRef:
                   name: pangea-db-credentials
                   key: database-password
+          volumeMounts:
+            - name: soul
+              mountPath: /etc/pangea
+              readOnly: true
           readinessProbe:
             httpGet:
               path: /api/health
@@ -87,6 +98,11 @@ spec:
             limits:
               cpu: 500m
               memory: 512Mi
+      volumes:
+        - name: soul
+          configMap:
+            name: pangea-api-soul
+            optional: true
 ---
 apiVersion: v1
 kind: Service

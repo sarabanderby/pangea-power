@@ -4,7 +4,9 @@ Async FastAPI service that sits between the PostgreSQL + pgvector database and t
 dashboard UI. **The UI talks only to this API**; this API is the only component
 that holds database credentials (read from the `pangea-db-credentials` Secret).
 
-## Endpoints (read-only, first pass)
+## Endpoints
+
+Read-only except where noted.
 
 | Method & path | Returns |
 |---------------|---------|
@@ -14,7 +16,20 @@ that holds database credentials (read from the `pangea-db-credentials` Secret).
 | `GET /api/turbines` | Turbine list (filters: `status`, `site_code`) |
 | `GET /api/turbines/{code}` | Single turbine |
 | `GET /api/turbines/{code}/readings?hours=24` | Recent sensor readings for charts |
-| `GET /api/alerts?status=active` | Alert feed |
+| `GET /api/alerts?status=active` | Alert feed (merged with the live wind cut-out alert) |
+| `GET /api/solar/predict` | Predicted vs simulated-actual output per solar site |
+| `GET /api/solar/forecast/{site_code}` | Hourly solar forecast detail |
+| `GET /api/wave/predict` | Predicted vs actual output per wave farm |
+| `GET /api/wave/forecast/{site_code}` | Hourly wave forecast detail |
+| `GET /api/wind/status` | Live wind speed per site + cut-out shutdown state |
+| `GET /api/operators` | Operator availability (shifts, leave, upcoming assignments) |
+| `GET /api/maintenance` | Work orders |
+| **`POST /api/maintenance`** | **Create a work order** — the only write in the API |
+| `POST /api/voice/transcribe` | Audio → text (proxies Whisper on KServe) |
+| `POST /api/voice/speak` | Text → WAV (proxies the `pangea-tts` Kokoro gateway) |
+| `GET /api/agent/health` | Assistant LLM reachability |
+| `POST /api/agent/chat` | Chat with Pangea (blocking) |
+| `POST /api/agent/chat/stream` | Chat with Pangea (SSE token stream) |
 
 Interactive docs at `/docs` once running.
 
@@ -27,7 +42,9 @@ backend/
 │   ├── config.py          # env-driven settings (DB creds from env/Secret)
 │   ├── db.py              # asyncpg connection pool + fetch helpers
 │   ├── models.py          # Pydantic v2 response shapes
-│   └── routers/           # fleet.py, turbines.py, alerts.py
+│   ├── laya.py            # tool-router client + context slicing for the assistant
+│   └── routers/           # fleet, turbines, alerts, solar, wave, wind,
+│                          # operators, maintenance, voice, agent
 ├── requirements.txt
 ├── Containerfile          # UBI9 python-311 base (OpenShift-friendly)
 └── helm/pangea-api/       # Deployment + Service + Route
@@ -109,8 +126,59 @@ DB host `pangea-db:5432`, credentials from Secret `pangea-db-credentials`
 When the image moves to a public registry, edit the one `image:` line in
 `templates/deployment.yaml`.
 
+### MLflow tracing
+
+Optional, and off by default. `MLFLOW_TRACKING_URI` ships empty because the
+tracking server is per-cluster; until it is set the API logs `mlflow tracing
+off: MLFLOW_TRACKING_URI is unset` and runs normally.
+
+Find the MLflow route on your cluster:
+
+```bash
+oc get route -A -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name,HOST:.spec.host \
+  | grep -i mlflow
+```
+
+On RHOAI it is usually fronted by the dashboard route with a `/mlflow` path
+rather than a route of its own. Set it and restart:
+
+```bash
+oc patch configmap pangea-api-config --type merge \
+  -p '{"data":{"MLFLOW_TRACKING_URI":"https://<host>/mlflow"}}'
+oc rollout restart deploy/pangea-api
+```
+
+Confirm it took — the log line names the resolved URI:
+
+```bash
+oc logs deploy/pangea-api | grep 'mlflow tracing'
+```
+
+Auth is a bearer token. The `pangea-mlflow` ServiceAccount token is mounted and
+used automatically; override it with the `pangea-mlflow-token` Secret if your
+tracking server wants different credentials.
+
+## Model serving (wired)
+
+The API is a proxy to models served on OpenShift AI / KServe; it holds no model
+weights and no heavy inference dependencies.
+
+| Model | Endpoint here | Served as |
+|-------|---------------|-----------|
+| Solar output (ONNX) | `/api/solar/predict` | MLServer, KServe v2 `/v2/models/solar-output/infer` |
+| Whisper `tiny` (STT) | `/api/voice/transcribe` | vLLM predictor, OpenAI audio API |
+| Kokoro v1.0 (TTS) | `/api/voice/speak` | MLServer ONNX + the `pangea-tts` glue gateway |
+| Granite 4.0 350M (assistant) | `/api/agent/chat{,/stream}` | vLLM CPU predictor, OpenAI chat-completions |
+| `laya` tool router | used internally by `/api/agent/chat` | KServe `:predict` classifier |
+
+Wave output is computed from a physics model in `wave.py` rather than a served
+model. All endpoints degrade to an error/empty response if their model is down.
+
 ## Not yet wired
 
-ML inference (OpenShift AI / KServe v2) and the conversational RAG endpoint over
-pgvector come in a later pass — this skeleton is the read layer the dashboard
-needs today.
+- **RAG over pgvector** — `knowledge_base.embedding` is NULL for every row; no
+  embedding model is deployed and there is no search endpoint.
+- **Agent tool-calling and writes** — the assistant is grounded by context
+  injection only. It cannot create work orders, book operatives, or acknowledge
+  alerts; see `assistant-architecture.md` §6 and phase P2.
+- **Predictive maintenance** — `ml_predictions` exists and is empty.

@@ -36,7 +36,7 @@ async def list_sites() -> list[Site]:
         "SELECT s.site_code, s.site_name, s.terrain::text AS terrain, "
         "       s.energy_type::text AS energy_type, "
         "       s.turbine_count, s.capacity_kw, s.avg_wind_speed_ms, "
-        "       s.latitude, s.longitude, s.nearest_city, "
+        "       s.latitude, s.longitude, s.nearest_city, s.country, "
         "       count(t.turbine_id) FILTER (WHERE t.status = 'operational') AS operational, "
         "       count(t.turbine_id) FILTER (WHERE t.status = 'maintenance') AS maintenance, "
         "       count(t.turbine_id) FILTER (WHERE t.status = 'offline') AS offline, "

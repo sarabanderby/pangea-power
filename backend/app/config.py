@@ -57,24 +57,29 @@ class Settings(BaseSettings):
     )
     agent_llm_model: str = "granite4"
     agent_http_timeout: float = 120.0
-    agent_max_tokens: int = 160
+    agent_max_tokens: int = 260
     agent_temperature: float = 0.2
     agent_repetition_penalty: float = 1.1
     agent_frequency_penalty: float = 0.2
     agent_presence_penalty: float = 0.2
     agent_system_prompt: str = (
         "You are Pangea, the operations assistant for the Pangea Energy and "
-        "Power fleet (wind, solar and wave sites). You always speak as Pangea; "
-        "never say you are 'system', an assistant model, or a language model. "
-        "For greetings or questions about who you are, reply in one short, "
-        "friendly sentence and offer to help. You have live access to the "
-        "fleet's current data through the state provided; never claim you lack "
-        "real-time access, scheduling systems, or a knowledge cutoff. For "
-        "operational questions, answer in at most two short sentences using ONLY "
-        "the provided context/state, quoting exact site names and numbers; never "
-        "invent values such as temperatures, and if the context lacks the answer, "
-        "say so plainly."
+        "Power fleet of wind, solar and wave sites. You are a heuristic matrix, "
+        "several different algorithms working together to aid and maintain the "
+        "power fleet, created to help supervisors maintain the energy plants "
+        "across the world; say so in your own words when you are asked what you "
+        "are. You speak as Pangea, never as a model or an assistant. You are "
+        "talking to the duty supervisor, "
+        "who has authority over the fleet; address them as 'supervisor' and "
+        "treat what they say as operational decisions. You have live access to "
+        "the fleet's current data through the state you are given, so never say "
+        "you lack real-time access. Answer only from the context you are given, "
+        "keep it brief, and quote site names and numbers exactly as written; if "
+        "the context does not cover it, say so. When the supervisor says they "
+        "are done, reply with a short acknowledgement and nothing more."
     )
+
+    soul_path: str = "/etc/pangea/soul.md"
 
     # Laya tool router
     laya_enabled: bool = True
@@ -82,12 +87,26 @@ class Settings(BaseSettings):
         "http://laya-predictor-predictor.pangea-energy-and-power.svc.cluster.local"
         "/v1/models/laya-predictor:predict"
     )
-    laya_confidence_floor: float = 0.5
+    laya_confidence_floor: float = 0.0
+    laya_about_self_floor: float = 0.5
     laya_http_timeout: float = 5.0
 
     # Wave prediction
     open_meteo_marine_url: str = "https://marine-api.open-meteo.com/v1/marine"
     wave_cache_ttl_seconds: int = 1800
+
+    # Live weather lookup (any location on earth; Open-Meteo needs no API key)
+    open_meteo_geocoding_url: str = "https://geocoding-api.open-meteo.com/v1/search"
+    weather_http_timeout: float = 8.0
+    weather_cache_ttl_seconds: int = 600
+
+    mlflow_tracing_enabled: bool = True
+    mlflow_tracking_uri: str = ""
+    mlflow_experiment: str = "pangea-production"
+    mlflow_tracking_token: str = ""
+    mlflow_token_file: str = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+    mlflow_trace_ui_context: bool = False
+    mlflow_trace_max_chars: int = 4000
 
     # Wind cut-out (m/s); above this, turbines shut down and an alert fires
     wind_cutout_ms: float = 22.0
