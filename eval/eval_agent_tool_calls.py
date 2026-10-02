@@ -16,11 +16,10 @@ built-in ToolCallCorrectness scorer in exact-match mode (deterministic, no
 judge model / API key required).
 
 Usage:
-    python eval/eval_agent_tool_calls.py
     PANGEA_AGENT_URL=http://localhost:8000 python eval/eval_agent_tool_calls.py
 
 Env vars:
-    PANGEA_AGENT_URL     Base URL of the deployed backend (default: prod route below)
+    PANGEA_AGENT_URL     Base URL of the deployed backend (required)
     MLFLOW_TRACKING_URI  Where to log results (default: local ./mlruns file store)
     MLFLOW_EXPERIMENT    MLflow experiment name (default: pangea-agent-tool-routing)
 """
@@ -34,10 +33,14 @@ import requests
 from mlflow.entities import SpanType
 from mlflow.genai.scorers import ToolCallCorrectness
 
-DEFAULT_AGENT_URL = (
-    "https://pangea-api-pangea-energy-and-power.apps.caiprod.rhoai.rh-aiservices-bu.com"
-)
-AGENT_URL = os.environ.get("PANGEA_AGENT_URL", DEFAULT_AGENT_URL).rstrip("/")
+AGENT_URL = os.environ.get("PANGEA_AGENT_URL", "").rstrip("/")
+if not AGENT_URL:
+    sys.exit(
+        "PANGEA_AGENT_URL is not set. Point it at a running backend, e.g.\n"
+        "  export PANGEA_AGENT_URL=http://localhost:8000\n"
+        "  export PANGEA_AGENT_URL=https://$(oc get route pangea-api "
+        "-o jsonpath='{.spec.host}')"
+    )
 REQUEST_TIMEOUT_S = 60
 
 # ---------------------------------------------------------------------------
