@@ -172,9 +172,8 @@ This quickstart can be deployed by any user with:
 - No cluster admin access and no custom SCC required
 
 The database runs under OpenShift's default `restricted-v2` SCC with a random
-UID. One exception: MLflow tracing is optional and, if enabled, needs a
-ServiceAccount with `admin` on the namespace — see
-[Technical details](#technical-details).
+UID. One exception: the optional MLflow tracing creates a ServiceAccount bound
+to the `admin` ClusterRole within the project.
 
 ## Deploy
 
@@ -425,9 +424,7 @@ Environment-specific endpoints ship empty rather than hardcoded, so a fresh
 clone points at nothing but your own cluster. `MLFLOW_TRACKING_URI` is the main
 one — tracing stays off until you set it, and the API logs
 `mlflow tracing off: MLFLOW_TRACKING_URI is unset`. See
-[backend/README.md](backend/README.md#mlflow-tracing) for the full setup,
-including why the ServiceAccount needs namespace `admin` to authenticate
-against the OpenShift AI MLflow instance.
+[backend/README.md](backend/README.md#mlflow-tracing) for how to set it.
 
 **Evaluation.** `eval/` scores the assistant's tool-routing against expected
 calls using MLflow's `ToolCallCorrectness` scorer in exact-match mode, which is
