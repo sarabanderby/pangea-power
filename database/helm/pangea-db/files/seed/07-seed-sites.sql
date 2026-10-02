@@ -5,7 +5,7 @@
 SELECT setseed(0.42);
 
 -- ---------------------------------------------------------------------------
--- Sites (5, matching DESIGN_DECISIONS.md: 15+25+20+18+12 = 90 turbines)
+-- Wind sites (5 of 6: 15+25+20+18+12 = 90 turbines; BJF adds 14 below)
 -- ---------------------------------------------------------------------------
 INSERT INTO sites (site_name, site_code, terrain, latitude, longitude, elevation_meters,
                    turbine_count, commissioned_date, avg_wind_speed_ms, min_temp_celsius,

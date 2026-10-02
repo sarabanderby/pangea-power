@@ -13,7 +13,7 @@ redistributable), which is what the Red Hat AI Quickstart contribution requires.
 - **pgvector** — PostgreSQL License ✅
 - **TimescaleDB** — intentionally NOT used. Its Community/TSL features (continuous
   aggregates, compression, retention automation) are *source-available* but **not
-  OSI open source**. At this scale (~90 turbines, demo/Quickstart) we don't need
+  OSI open source**. At this scale (~100 turbines, demo/Quickstart) we don't need
   them: time-series is stored in plain Postgres tables and rolled up with regular
   materialized views. If large-scale partitioning is ever needed, use native
   PostgreSQL declarative partitioning (also permissive).
@@ -23,23 +23,42 @@ redistributable), which is what the Red Hat AI Quickstart contribution requires.
 ```
 database/
 ├── README.md
-├── Containerfile          # UBI9 postgresql-15 + pgvector (for OpenShift)
-├── init/                  # SQL run in order on first container start
-│   ├── 01-extensions.sql
-│   ├── 02-types.sql
-│   ├── 03-tables.sql
-│   ├── 04-indexes.sql
-│   ├── 05-views.sql
-│   └── 06-functions.sql
-└── seed/                  # seed data (added in a later step)
+└── helm/pangea-db/             # the chart — nothing to build
+    ├── values.yaml             # image, seed toggle, storage, credentials
+    ├── templates/              # StatefulSet, Service, Secret, ConfigMap
+    └── files/
+        ├── init/               # schema
+        │   ├── 01-extensions.sql
+        │   ├── 02-types.sql
+        │   ├── 03-tables.sql
+        │   ├── 04-indexes.sql
+        │   ├── 05-views.sql
+        │   └── 06-functions.sql
+        └── seed/               # demo fleet, included when seed=true
+            ├── 07-seed-sites.sql
+            ├── 08-seed-turbines.sql
+            ├── 09-seed-timeseries.sql
+            └── 10-seed-operations.sql
 ```
 
-The `init/` scripts are numbered so they apply in order (mirrors how the Postgres
-container's `/docker-entrypoint-initdb.d` and our OpenShift init flow run them).
+There is no image to build: the chart runs the community `pgvector/pgvector:pg15`
+image (Postgres 15 with pgvector, Debian-based) straight from Docker Hub.
+
+Both directories are globbed into a ConfigMap and mounted at
+`/docker-entrypoint-initdb.d`. The Postgres entrypoint runs every `*.sql` there
+in filename order, but **only when the data directory is first initialised** —
+so the numbering keeps the schema ahead of the seed, and re-installing over an
+existing volume applies nothing. The seed files are included only when
+`seed=true` (the default).
 
 ## Time-series without TimescaleDB
 
-`sensor_readings`, `ml_predictions`, and `wind_data` are ordinary tables keyed on
-`(time, id)` with descending time indexes. Dashboard rollups (hourly/daily) are
-regular `MATERIALIZED VIEW`s refreshed on a schedule (see `05-views.sql` and the
-`refresh_rollups()` function in `06-functions.sql`).
+`sensor_readings`, `ml_predictions`, and `wind_data` are ordinary tables indexed
+on `(id, time DESC)`. Dashboard rollups (hourly/daily) are regular
+`MATERIALIZED VIEW`s — `sensor_readings_hourly`, `daily_prediction_summary` and
+`wind_data_hourly` in `05-views.sql` — refreshed by `refresh_rollups()` in
+`06-functions.sql`.
+
+Nothing in the chart schedules that call yet. Run it hourly from a CronJob or
+the API layer if you need the rollups kept current; the dashboard reads the
+base tables directly, so it is unaffected either way.

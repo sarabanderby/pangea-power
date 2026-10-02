@@ -7,7 +7,7 @@ image:
   tag: pg15
   pullPolicy: IfNotPresent
 
-# Load the demo fleet (5 sites, 90 turbines, 48h of time-series) on first init.
+# Load the demo fleet (11 sites, 104 turbines, 48h of time-series) on first init.
 seed: true
 
 # Data volume size. Leave storageClass empty to use the cluster default.

@@ -1,5 +1,5 @@
 -- ============================================================================
--- 08 - Seed: turbines (90, generated per site from sites.turbine_count)
+-- 08 - Seed: turbines (104, generated per site from sites.turbine_count)
 -- Codes are <SITE_CODE>-NN (e.g. NSO-04). Model/status/output derived so the
 -- fleet has a realistic spread of operating / maintenance / offline states.
 -- ============================================================================
