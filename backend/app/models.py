@@ -75,6 +75,51 @@ class WorkOrderCreate(BaseModel):
     scheduled_start: datetime | None = None
     scheduled_end: datetime | None = None
     estimated_hours: float | None = None
+    created_by: str = "schedule-ui"
+
+
+class WorkOrderAssign(BaseModel):
+    assigned_operative_code: str | None = None   # None clears the assignment
+    scheduled_start: datetime | None = None
+
+
+class ShiftDefinition(BaseModel):
+    shift: str
+    start_hour: int | None = None
+    end_hour: int | None = None
+    booked_hours: int = 0
+    description: str | None = None
+
+
+class ProposedAction(BaseModel):
+    """A write the assistant wants to make, pending confirmation."""
+    action_id: int
+    action: str
+    summary: str
+    fields: list[dict] = []        # [{label, value}] for the confirm card
+    warnings: list[str] = []
+    status: str = "proposed"
+
+
+class DayAvailability(BaseModel):
+    day: date
+    shift: str
+    window: str | None = None
+    on_leave: bool = False
+    is_exception: bool = False
+    capacity_hours: float = 0
+    booked_hours: float = 0
+    free_hours: float = 0
+    working: bool = False
+    assignments: list[dict] = []
+
+
+class OperatorSchedule(BaseModel):
+    employee_code: str
+    name: str
+    skill_level: str
+    base_location: str | None = None
+    days: list[DayAvailability] = []
 
 
 class OperatorAvailability(BaseModel):
@@ -227,4 +272,5 @@ class AgentChatRequest(BaseModel):
 class AgentChatResponse(BaseModel):
     reply: str
     model: str | None = None
-    route: dict | None = None  # laya tool/site decision, when used
+    route: dict | None = None              # laya tool/site decision, when used
+    action: ProposedAction | None = None   # a write awaiting confirmation

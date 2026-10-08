@@ -15,7 +15,8 @@ from . import db, tracing
 logging.basicConfig(level=logging.INFO)
 from .config import settings
 from .routers import (
-    agent, alerts, fleet, maintenance, operators, solar, turbines, voice, wave, wind,
+    actions, agent, alerts, fleet, maintenance, operators, shifts, solar,
+    turbines, voice, wave, wind,
 )
 
 
@@ -46,6 +47,8 @@ app.include_router(turbines.router)
 app.include_router(alerts.router)
 app.include_router(maintenance.router)
 app.include_router(operators.router)
+app.include_router(shifts.router)
+app.include_router(actions.router)
 app.include_router(solar.router)
 app.include_router(wave.router)
 app.include_router(wind.router)

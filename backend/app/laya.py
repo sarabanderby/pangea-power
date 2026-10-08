@@ -11,14 +11,14 @@ from .config import settings
 logger = logging.getLogger("pangea.laya")
 
 TOOL_CRITERIA = {
-    "wind_status": "anything about wind sites or turbines: live wind speed, gusts, whether a site is above the cut-out wind speed, or whether turbines are shut down",
+    "wind_status": "anything about conditions at one of the fleet's own wind sites or turbines: live wind speed, how windy it is, gusts, whether a site is above the cut-out wind speed, whether turbines are shut down, or the weather at a named fleet site",
     "solar_forecast": "anything about solar sites or panels: solar output, how much a solar site is producing, cloud cover, irradiance, panel performance, or why a solar site is underperforming",
     "wave_forecast": "anything about wave farms: wave height, wave energy, or how much a wave farm is generating",
     "active_alerts": "current alarms, warnings, faults, or what needs attention right now",
-    "maintenance_tasks": "scheduled work orders, inspections, repairs, tasks to take care of, or the condition of site infrastructure such as drainage, access roads or foundations",
-    "operators": "which technicians or operatives are available, their skills, certifications, training, schedules, whether a crew has finished a job, or who can perform a task",
+    "maintenance_tasks": "work that needs doing on the fleet: open tasks, outstanding tasks, open jobs, work orders, the backlog, what is open today or this week, and scheduled inspections, repairs and services",
+    "operators": "which technicians or operatives are available, free, their skills, certifications, training, schedules, whether a crew has finished a job, or who can perform a task",
     "fleet_totals": "combined generation across all energy types at once; only when no single technology such as wind, solar or wave is named",
-    "weather": "weather, temperature, rain or snow at a town, city or country anywhere in the world that is not one of the fleet's own sites",
+    "weather": "the weather somewhere that is NOT one of the fleet's own sites: temperature, how hot or cold it is, rain, snow, humidity, sun, cloud, fog, storms, degrees celsius, at a town, city or country anywhere else in the world",
     "none": "greetings, thanks, sign-offs such as 'that's all', or anything that is not a question about the fleet or the weather",
 }
 

@@ -22,11 +22,16 @@ Read-only except where noted.
 | `GET /api/wave/predict` | Predicted vs actual output per wave farm |
 | `GET /api/wave/forecast/{site_code}` | Hourly wave forecast detail |
 | `GET /api/wind/status` | Live wind speed per site + cut-out shutdown state |
-| `GET /api/operators` | Operator availability (shifts, leave, upcoming assignments) |
+| `GET /api/operators` | Active roster: shifts, leave, upcoming assignments. `?include_on_leave=false` narrows it to who can actually be given work |
+| `GET /api/operators/availability` | Resolved day-by-day rota: shift, window, capacity, booked and free hours, jobs. `?days=` `?code=` |
+| `GET /api/shifts` | Clock hours per shift (`day` 07:00-19:00, `night` 19:00-07:00) |
 | `GET /api/maintenance` | Work orders |
-| **`POST /api/maintenance`** | **Create a work order** — the only write in the API |
+| **`POST /api/maintenance`** | **Create a work order** — the only write in the API. Rejects (409) an assignment the operative's rota cannot take |
 | `POST /api/voice/transcribe` | Audio → text (proxies Whisper on KServe) |
 | `POST /api/voice/speak` | Text → WAV (proxies the `pangea-tts` Kokoro gateway) |
+| **`POST /api/agent/actions/{id}/confirm`** | **Carry out a proposed write** — goes through `POST /api/maintenance`, so the rota still applies |
+| `POST /api/agent/actions/{id}/cancel` | Discard a proposal |
+| `GET /api/agent/actions` | Audit trail: what was proposed, and what became of it |
 | `GET /api/agent/health` | Assistant LLM reachability |
 | `POST /api/agent/chat` | Chat with Pangea (blocking) |
 | `POST /api/agent/chat/stream` | Chat with Pangea (SSE token stream) |

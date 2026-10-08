@@ -1,6 +1,9 @@
 """asyncpg connection pool, created at app startup and shared across requests."""
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 import asyncpg
 
 from .config import settings
@@ -34,11 +37,26 @@ def pool() -> asyncpg.Pool:
     return _pool
 
 
-async def fetch(query: str, *args) -> list[asyncpg.Record]:
+@asynccontextmanager
+async def transaction() -> AsyncIterator[asyncpg.Connection]:
+    """A single connection inside a transaction, for a check plus the write
+    that depends on it."""
     async with pool().acquire() as conn:
+        async with conn.transaction():
+            yield conn
+
+
+async def fetch(query: str, *args,
+                conn: asyncpg.Connection | None = None) -> list[asyncpg.Record]:
+    if conn is not None:
         return await conn.fetch(query, *args)
+    async with pool().acquire() as c:
+        return await c.fetch(query, *args)
 
 
-async def fetchrow(query: str, *args) -> asyncpg.Record | None:
-    async with pool().acquire() as conn:
+async def fetchrow(query: str, *args,
+                   conn: asyncpg.Connection | None = None) -> asyncpg.Record | None:
+    if conn is not None:
         return await conn.fetchrow(query, *args)
+    async with pool().acquire() as c:
+        return await c.fetchrow(query, *args)
