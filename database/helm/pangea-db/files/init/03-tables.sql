@@ -128,6 +128,24 @@ CREATE TABLE maintenance_operatives (
 -- ---------------------------------------------------------------------------
 -- 5. Operative schedules
 -- ---------------------------------------------------------------------------
+
+-- Clock hours for each shift. One row per shift_type, so the rota, the API and
+-- the dashboard all agree on when a shift actually runs. 'night' wraps past
+-- midnight (start_hour > end_hour); 'on_call' and 'off' have no fixed window.
+CREATE TABLE shift_definitions (
+    shift        shift_type PRIMARY KEY,
+    start_hour   INT,
+    end_hour     INT,
+    booked_hours INT NOT NULL DEFAULT 0,   -- work a shift can absorb in a day
+    description  TEXT
+);
+
+INSERT INTO shift_definitions (shift, start_hour, end_hour, booked_hours, description) VALUES
+    ('day',     7, 19, 8, 'Day shift, 07:00-19:00'),
+    ('night',  19,  7, 8, 'Night shift, 19:00-07:00'),
+    ('on_call', NULL, NULL, 8, 'Callout cover, no fixed window'),
+    ('off',    NULL, NULL, 0, 'Not working');
+
 CREATE TABLE operative_schedules (
     schedule_id      SERIAL PRIMARY KEY,
     operative_id     INT NOT NULL REFERENCES maintenance_operatives(operative_id) ON DELETE CASCADE,
@@ -347,3 +365,23 @@ CREATE TABLE knowledge_base (
     created_at    TIMESTAMPTZ DEFAULT NOW(),
     is_active     BOOLEAN DEFAULT TRUE
 );
+
+-- ---------------------------------------------------------------------------
+-- 13. Agent actions
+-- ---------------------------------------------------------------------------
+
+-- Audit trail for writes the assistant proposes. It never writes to
+-- work_orders itself; only an explicit confirmation turns a proposal into one.
+CREATE TABLE agent_actions (
+    action_id    SERIAL PRIMARY KEY,
+    session_id   TEXT,
+    action       TEXT NOT NULL,             -- e.g. 'schedule_work'
+    params       JSONB NOT NULL,            -- resolved arguments, not free text
+    message      TEXT,                      -- what the user typed
+    status       agent_action_status NOT NULL DEFAULT 'proposed',
+    result       JSONB,                     -- work order created, or the error
+    proposed_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    resolved_at  TIMESTAMPTZ
+);
+
+CREATE INDEX idx_agent_actions_status ON agent_actions(status, proposed_at DESC);

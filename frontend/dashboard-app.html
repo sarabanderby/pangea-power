@@ -1117,6 +1117,14 @@
             cursor: pointer;
         }
         .sched-submit:disabled { opacity: 0.5; cursor: progress; }
+        .sched-field-wide { grid-column: 1 / -1; }
+        .sched-hint { font-size: 0.78rem; color: #94a3b8; }
+        .sched-hint.ok { color: #7dd3fc; }
+        .sched-hint.warn { color: #fcd34d; }
+        .cal-load { font-size: 0.66rem; color: #64748b; align-self: flex-start; }
+        .cal-shift em {
+            font-style: normal; opacity: 0.75; margin-left: 0.25rem; font-size: 0.9em;
+        }
         .sched-msg { font-size: 0.8rem; }
         .sched-msg.ok { color: #4ade80; }
         .sched-msg.err { color: #f87171; }
@@ -1167,6 +1175,7 @@
             border-radius: 4px; padding: 0.18rem 0.3rem;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
+        .cal-task.drifted { border-left-color: #fcd34d; border-left-style: dashed; }
         .cal-empty { font-size: 0.8rem; color: #94a3b8; padding: 0.5rem; }
 
         .view-all:hover {
@@ -1466,7 +1475,111 @@
             font-size: 0.85rem;
             line-height: 1.45;
             max-width: 100%;
+            white-space: pre-wrap;
         }
+        .confirm-card {
+            margin-top: 0.6rem; padding: 0.6rem 0.7rem;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 0.5rem; background: rgba(15, 23, 42, 0.6);
+            white-space: normal;
+        }
+        .confirm-head {
+            font-size: 0.82rem; color: #e3f2fd; margin-bottom: 0.45rem;
+        }
+        .confirm-row {
+            display: flex; gap: 0.5rem; font-size: 0.76rem; line-height: 1.5;
+        }
+        .confirm-k { color: #64748b; min-width: 5.5rem; flex-shrink: 0; }
+        .confirm-v { color: #cbd5e1; }
+        .confirm-warn {
+            font-size: 0.74rem; color: #fcd34d; margin-top: 0.4rem;
+        }
+        .confirm-actions {
+            display: flex; align-items: center; gap: 0.45rem; margin-top: 0.6rem;
+            flex-wrap: wrap;
+        }
+        .confirm-yes, .confirm-no {
+            font: inherit; font-size: 0.76rem; padding: 0.28rem 0.7rem;
+            border-radius: 0.35rem; cursor: pointer; border: 1px solid transparent;
+        }
+        .confirm-yes { background: #0ea5e9; color: #04202e; font-weight: 600; }
+        .confirm-no {
+            background: transparent; color: #94a3b8;
+            border-color: rgba(148, 163, 184, 0.35);
+        }
+        .confirm-yes:disabled, .confirm-no:disabled { opacity: 0.5; cursor: progress; }
+        .confirm-status { font-size: 0.74rem; color: #94a3b8; }
+        .confirm-status.ok { color: #4ade80; }
+        .confirm-status.err { color: #f87171; }
+        .confirm-status.muted { color: #64748b; }
+
+
+        /* Operator's phone — visual feedback when a dispatch actually lands. */
+        .phone-sim {
+            position: fixed; right: 2rem; bottom: 2rem; width: 236px; z-index: 4000;
+            opacity: 0; transform: translateY(28px) scale(0.96);
+            transition: opacity 0.35s ease, transform 0.35s cubic-bezier(.2,.9,.3,1.3);
+            pointer-events: none;
+        }
+        .phone-sim.in { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+        .phone-body {
+            border-radius: 30px; padding: 9px;
+            background: linear-gradient(160deg, #2b3647, #121a28);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(148,163,184,0.25);
+        }
+        .phone-screen {
+            position: relative; border-radius: 23px; overflow: hidden;
+            background: linear-gradient(170deg, #0b2235 0%, #0a1929 55%, #101d2e 100%);
+            padding: 1.5rem 0.6rem 1.1rem; min-height: 310px;
+        }
+        .phone-notch {
+            position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
+            width: 66px; height: 15px; border-radius: 9px; background: #121a28;
+        }
+        .phone-clock {
+            text-align: center; color: #e3f2fd; margin: 1.4rem 0 0.1rem;
+            font-size: 2.6rem; font-weight: 300; letter-spacing: -0.02em;
+        }
+        .phone-date {
+            text-align: center; color: #94a3b8; font-size: 0.68rem;
+            margin-bottom: 1.2rem;
+        }
+        .phone-note {
+            background: rgba(226, 240, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            border-radius: 15px; padding: 0.5rem 0.6rem;
+            opacity: 0; transform: translateY(-12px);
+            animation: phoneNoteIn 0.45s cubic-bezier(.2,.9,.3,1.3) 0.3s forwards;
+        }
+        @keyframes phoneNoteIn { to { opacity: 1; transform: translateY(0); } }
+        .phone-note-head {
+            display: flex; align-items: center; gap: 0.35rem;
+            font-size: 0.6rem; color: #94a3b8; margin-bottom: 0.3rem;
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .phone-note-icon {
+            width: 15px; height: 15px; border-radius: 4px; flex-shrink: 0;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.5rem; color: #04202e; font-weight: 700;
+            text-transform: none; letter-spacing: 0;
+        }
+        .phone-note-ago { margin-left: auto; text-transform: none; }
+        .phone-note-title {
+            font-size: 0.74rem; color: #e3f2fd; font-weight: 600;
+            margin-bottom: 0.12rem;
+        }
+        .phone-note-body { font-size: 0.68rem; color: #cbd5e1; line-height: 1.35; }
+        .phone-note.removed .phone-note-icon {
+            background: linear-gradient(135deg, #fca5a5, #f87171);
+        }
+        .phone-to {
+            text-align: center; font-size: 0.62rem; color: #64748b;
+            margin-top: 0.55rem;
+        }
+        @media (max-width: 720px) { .phone-sim { display: none; } }
+
         .chat-msg.user .chat-bubble { background: rgba(56, 189, 248, 0.12); color: #e3f2fd; }
         .chat-msg.assistant .chat-bubble { background: rgba(148, 163, 184, 0.1); color: #cbd5e1; }
 
@@ -2310,7 +2423,7 @@
                 </div>
                 <div class="sched-field">
                     <label for="schedOperator">Assign to</label>
-                    <select id="schedOperator"></select>
+                    <select id="schedOperator" onchange="syncShiftHint()"></select>
                 </div>
                 <div class="sched-field">
                     <label for="schedType">Work type</label>
@@ -2332,11 +2445,15 @@
                 </div>
                 <div class="sched-field">
                     <label for="schedStart">Scheduled start</label>
-                    <input id="schedStart" type="datetime-local">
+                    <input id="schedStart" type="datetime-local" onchange="syncShiftHint()">
                 </div>
                 <div class="sched-field">
                     <label for="schedHours">Estimated hours</label>
-                    <input id="schedHours" type="number" step="0.5" min="0" placeholder="e.g. 4">
+                    <input id="schedHours" type="number" step="0.5" min="0" placeholder="e.g. 8"
+                           onchange="syncShiftHint()">
+                </div>
+                <div class="sched-field sched-field-wide">
+                    <span class="sched-hint" id="schedShiftHint"></span>
                 </div>
                 <div class="sched-actions">
                     <button class="sched-submit" id="schedSubmit" type="submit">Create task</button>
@@ -2781,6 +2898,166 @@
             return bubble;
         }
 
+        // A mock-up of the assigned technician's phone, shown once a dispatch
+        // actually commits. Cosmetic: nothing is sent anywhere.
+        let phoneTimer = null;
+
+        function showPhoneNotification({ recipient, title, body, removed }) {
+            const old = document.getElementById('phoneSim');
+            if (old) old.remove();
+            clearTimeout(phoneTimer);
+
+            const now = new Date();
+            const el = document.createElement('div');
+            el.className = 'phone-sim';
+            el.id = 'phoneSim';
+
+            const mk = (cls, text) => {
+                const d = document.createElement('div');
+                d.className = cls;
+                if (text != null) d.textContent = text;
+                return d;
+            };
+
+            const screen = mk('phone-screen');
+            screen.appendChild(mk('phone-notch'));
+            screen.appendChild(mk('phone-clock', now.toLocaleTimeString(
+                [], { hour: '2-digit', minute: '2-digit' })));
+            screen.appendChild(mk('phone-date', now.toLocaleDateString(
+                undefined, { weekday: 'long', day: 'numeric', month: 'long' })));
+
+            const note = mk('phone-note' + (removed ? ' removed' : ''));
+            const head = mk('phone-note-head');
+            const icon = mk('phone-note-icon', 'P');
+            head.append(icon, mk('', 'Pangea'), mk('phone-note-ago', 'now'));
+            head.children[1].style.textTransform = 'uppercase';
+            note.append(head, mk('phone-note-title', title), mk('phone-note-body', body));
+            screen.appendChild(note);
+
+            const bodyWrap = mk('phone-body');
+            bodyWrap.appendChild(screen);
+            el.appendChild(bodyWrap);
+            el.appendChild(mk('phone-to', recipient ? `${recipient}'s phone` : ''));
+
+            el.onclick = () => hidePhoneNotification();
+            document.body.appendChild(el);
+            requestAnimationFrame(() => el.classList.add('in'));
+            phoneTimer = setTimeout(hidePhoneNotification, 7000);
+        }
+
+        function hidePhoneNotification() {
+            const el = document.getElementById('phoneSim');
+            if (!el) return;
+            el.classList.remove('in');
+            setTimeout(() => el.remove(), 400);
+        }
+
+        // Turn a confirmed action into what the technician would actually see.
+        function phoneForAction(card, data) {
+            const field = (label) => (card.fields || [])
+                .find(f => f.label === label)?.value || '';
+            const wo = data.work_order || {};
+            const job = wo.title || field('Work order');
+            // Titles already lead with the turbine code, so don't say it twice.
+            const where = wo.site_name
+                ? (job.includes(wo.turbine_code) ? wo.site_name
+                                                 : `${wo.turbine_code} · ${wo.site_name}`)
+                : field('Turbine');
+            const when = field('Starts');
+
+            if (card.action === 'unassign_work') {
+                const name = field('Remove').split(' (')[0];
+                return { recipient: name, removed: true, title: 'Job removed',
+                         body: `${job} — ${where}. You are no longer assigned.` };
+            }
+            const name = (field('Assign to') || field('Assigned to')).split(' (')[0];
+            if (!name || name === 'Unassigned') return null;
+            return { recipient: name, removed: false, title: 'New job assigned',
+                     body: `${job} — ${where}${when ? `. Starts ${when}` : ''}.` };
+        }
+
+        // DOM nodes rather than markup, so titles cannot inject anything.
+        function renderConfirmCard(bubble, card) {
+            const el = document.createElement('div');
+            el.className = 'confirm-card';
+
+            const head = document.createElement('div');
+            head.className = 'confirm-head';
+            head.textContent = card.summary;
+            el.appendChild(head);
+
+            for (const f of card.fields || []) {
+                const row = document.createElement('div');
+                row.className = 'confirm-row';
+                const k = document.createElement('span');
+                k.className = 'confirm-k';
+                k.textContent = f.label;
+                const v = document.createElement('span');
+                v.className = 'confirm-v';
+                v.textContent = f.value;
+                row.append(k, v);
+                el.appendChild(row);
+            }
+
+            for (const w of card.warnings || []) {
+                const warn = document.createElement('div');
+                warn.className = 'confirm-warn';
+                warn.textContent = w;
+                el.appendChild(warn);
+            }
+
+            const actions = document.createElement('div');
+            actions.className = 'confirm-actions';
+            const yes = document.createElement('button');
+            yes.className = 'confirm-yes';
+            yes.textContent = 'Confirm';
+            const no = document.createElement('button');
+            no.className = 'confirm-no';
+            no.textContent = 'Cancel';
+            const status = document.createElement('span');
+            status.className = 'confirm-status';
+
+            const settle = (text, cls) => {
+                yes.remove(); no.remove();
+                status.textContent = text;
+                status.className = 'confirm-status ' + cls;
+            };
+
+            const act = async (verb) => {
+                yes.disabled = no.disabled = true;
+                status.textContent = verb === 'confirm' ? 'Booking…' : 'Cancelling…';
+                try {
+                    const res = await fetch(
+                        `${API_BASE}/agent/actions/${card.action_id}/${verb}`,
+                        { method: 'POST' });
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok) {
+                        settle(data.detail || `Could not ${verb} that.`, 'err');
+                        return;
+                    }
+                    const done = card.action === 'unassign_work'
+                        ? 'Unassigned.'
+                        : `Booked as ${data.work_order.work_order_number}.`;
+                    settle(verb === 'confirm' ? done : 'Cancelled — nothing was booked.',
+                           verb === 'confirm' ? 'ok' : 'muted');
+                    if (verb === 'confirm') {
+                        const note = phoneForAction(card, data);
+                        if (note) showPhoneNotification(note);
+                    }
+                } catch (e) {
+                    yes.disabled = no.disabled = false;
+                    status.textContent = 'Could not reach the API.';
+                    status.className = 'confirm-status err';
+                }
+            };
+
+            yes.onclick = () => act('confirm');
+            no.onclick = () => act('cancel');
+            actions.append(yes, no, status);
+            el.appendChild(actions);
+            bubble.appendChild(el);
+        }
+
         async function sendChat(text) {
             const input = document.getElementById('chatInput');
             let msg = (text != null ? text : (input ? input.value : '')).trim();
@@ -2806,6 +3083,7 @@
                 let buffer = '';
                 let reply = '';
                 let streamErr = null;
+                let card = null;
 
                 while (true) {
                     const { value, done } = await reader.read();
@@ -2819,6 +3097,8 @@
                         let payload;
                         try { payload = JSON.parse(dataLine.slice(5).trim()); } catch { continue; }
                         if (payload.error) { streamErr = payload.error; continue; }
+                        // Nothing is written until Confirm is pressed.
+                        if (payload.card) { card = payload.card; continue; }
                         if (payload.delta) {
                             if (!reply) { stopThinking(); bubble.textContent = ''; }
                             reply += payload.delta;
@@ -2837,13 +3117,15 @@
                 }
 
                 reply = reply.trim();
-                if (!reply) {
+                if (!reply && !card) {
                     stopThinking();
                     bubble.textContent = streamErr || '(no response)';
                     if (speaker) speaker.end(); else maybeRelisten();
                     return;
                 }
+                stopThinking();
                 bubble.textContent = reply;
+                if (card) renderConfirmCard(bubble, card);
                 // Remember this turn and cap growth (backend replays the last 6).
                 chatHistory.push({ role: 'user', content: msg }, { role: 'assistant', content: reply });
                 if (chatHistory.length > 12) chatHistory = chatHistory.slice(-12);
@@ -3606,21 +3888,32 @@
 
         // ---- Operator schedule modal ----
 
-        // Sunday-indexed lookup (Date.getDay()) into the mon-keyed weekly_schedule.
-        const CAL_WD_KEY = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
         const CAL_DAYS = 14;
+        let SHIFTS = {};
+        let SCHED_ROSTER = [];
+
+        // Rota precedence is resolved server-side by operative_availability();
+        // nothing here recomputes who is working.
+        function dayFor(code, iso) {
+            const o = SCHED_ROSTER.find(x => x.employee_code === code);
+            return o && o.days.find(d => d.day === iso);
+        }
 
         async function openSchedule(siteName) {
             document.getElementById('scheduleModal').classList.add('open');
             document.getElementById('schedMsg').textContent = '';
             try {
-                const [turbines, operators] = await Promise.all([
+                const [turbines, roster, shifts] = await Promise.all([
                     apiGet('/turbines'),
-                    apiGet('/operators'),
+                    apiGet(`/operators/availability?days=${CAL_DAYS}`),
+                    apiGet('/shifts'),
                 ]);
+                SHIFTS = Object.fromEntries(shifts.map(s => [s.shift, s]));
+                SCHED_ROSTER = roster;
                 populateTurbines(turbines, siteName);
-                populateOperators(operators);
-                renderCalendar(operators);
+                populateOperators(roster);
+                renderCalendar(roster);
+                syncShiftHint();
             } catch (e) {
                 document.getElementById('schedCal').innerHTML =
                     `<div class="cal-empty">Could not load schedule: ${e.message}</div>`;
@@ -3641,19 +3934,72 @@
                 `<option value="${t.turbine_code}">${t.turbine_code} — ${t.site_name}</option>`).join('');
         }
 
-        function populateOperators(operators) {
+        function populateOperators(roster) {
             const sel = document.getElementById('schedOperator');
-            sel.innerHTML = '<option value="">Unassigned</option>' + operators.map(o =>
+            // Everyone stays in the calendar, but somebody off all fortnight
+            // has nowhere to put a job.
+            const assignable = roster.filter(o => o.days.some(d => d.working));
+            sel.innerHTML = '<option value="">Unassigned</option>' + assignable.map(o =>
                 `<option value="${o.employee_code}">${o.name} (${o.skill_level})</option>`).join('');
+        }
+
+        function longDate(iso) {
+            const [y, m, d] = iso.split('-').map(Number);
+            return new Date(y, m - 1, d).toLocaleDateString(
+                undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+        }
+
+        // Warn before the API has to reject, and snap to the shift start.
+        function syncShiftHint() {
+            const hint = document.getElementById('schedShiftHint');
+            if (!hint) return;
+            const code = document.getElementById('schedOperator').value;
+            const startEl = document.getElementById('schedStart');
+            const o = SCHED_ROSTER.find(x => x.employee_code === code);
+            if (!o || !startEl.value) { hint.textContent = ''; hint.className = 'sched-hint'; return; }
+
+            const picked = new Date(startEl.value);
+            const iso = calIsoLocal(picked);
+            const day = o.days.find(x => x.day === iso);
+            const when = longDate(iso);
+            if (!day) { hint.textContent = ''; hint.className = 'sched-hint'; return; }
+
+            if (!day.working) {
+                const next = o.days.find(x => x.day > iso && x.working);
+                hint.textContent = `${o.name} is ${day.on_leave ? 'on leave' : 'off'} on ${when}.`
+                    + (next ? ` Next working day is ${longDate(next.day)}.` : '');
+                hint.className = 'sched-hint warn';
+                return;
+            }
+
+            const hours = parseFloat(document.getElementById('schedHours').value)
+                || day.capacity_hours;
+            const needed = Math.min(hours, day.capacity_hours);
+            if (day.free_hours < needed) {
+                const titles = day.assignments.map(a => a.title).join(', ') || 'other work';
+                hint.textContent = `${o.name} has ${day.free_hours}h free on ${when}`
+                    + ` but this needs ${needed}h (${titles}).`;
+                hint.className = 'sched-hint warn';
+                return;
+            }
+
+            const def = SHIFTS[day.shift];
+            if (def && def.start_hour !== null && picked.getHours() !== def.start_hour) {
+                startEl.value = `${iso}T${String(def.start_hour).padStart(2, '0')}:00`;
+            }
+            hint.textContent = `${o.name} works the ${day.shift.replace('_', '-')} shift on ${when}`
+                + (day.window ? ` (${day.window})` : '')
+                + ` — ${day.free_hours}h of ${day.capacity_hours}h free.`;
+            hint.className = 'sched-hint ok';
         }
 
         function calIsoLocal(d) {
             return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         }
 
-        function renderCalendar(operators) {
+        function renderCalendar(roster) {
             const el = document.getElementById('schedCal');
-            if (!operators.length) { el.innerHTML = '<div class="cal-empty">No technicians available.</div>'; return; }
+            if (!roster.length) { el.innerHTML = '<div class="cal-empty">No technicians available.</div>'; return; }
 
             const today = new Date(); today.setHours(0, 0, 0, 0);
             const todayIso = calIsoLocal(today);
@@ -3670,21 +4016,28 @@
                 html += `<div class="cal-dayhead${t}"><span class="cal-wd">${wd}</span><span class="cal-dm">${dm}</span></div>`;
             }
 
-            for (const o of operators) {
+            for (const o of roster) {
                 html += `<div class="cal-opname"><span class="cal-opn">${o.name}</span><span class="cal-ops">${o.employee_code} · ${o.skill_level}</span></div>`;
                 for (const d of days) {
                     const iso = calIsoLocal(d);
-                    const shift = (o.weekly_schedule && o.weekly_schedule[CAL_WD_KEY[d.getDay()]]) || 'off';
-                    const onLeave = o.on_leave_until && iso <= o.on_leave_until;
-                    const isException = (o.exception_dates || []).includes(iso);
-                    const cls = onLeave ? 'leave' : (isException ? 'off' : shift);
-                    const label = onLeave ? 'leave' : (isException ? 'off' : shift.replace('_', '-'));
-                    const chips = (o.upcoming_assignments || [])
-                        .filter(u => u.scheduled_start && calIsoLocal(new Date(u.scheduled_start)) === iso)
-                        .map(u => `<span class="cal-task" title="${u.title} (${u.status})">${u.title}</span>`)
-                        .join('');
+                    const day = dayFor(o.employee_code, iso);
+                    const cls = day ? day.shift : 'off';
+                    const label = cls.replace('_', '-');
+                    const def = SHIFTS[cls];
+                    const win = day ? day.window : null;
+                    const tip = cls === 'leave' ? 'On leave'
+                        : (day && day.is_exception) ? 'Scheduled exception'
+                        : (def && def.description) || label;
+                    // Multi-day work is expanded per day by the API. A drifted
+                    // job shows where it will actually run, not where it was booked.
+                    const chips = (day ? day.assignments : []).map(a =>
+                        `<span class="cal-task${a.drifted ? ' drifted' : ''}" title="${a.title} (${a.status}, ${a.hours}h)`
+                        + `${a.drifted ? ` — booked for ${longDate(a.booked_for)}, moved here` : ''}">${a.title}</span>`).join('');
+                    const load = day && day.booked_hours
+                        ? `<span class="cal-load">${day.booked_hours}/${day.capacity_hours}h</span>` : '';
                     const t = iso === todayIso ? ' today' : '';
-                    html += `<div class="cal-cell${t}"><span class="cal-shift ${cls}">${label}</span>${chips}</div>`;
+                    html += `<div class="cal-cell${t}"><span class="cal-shift ${cls}" title="${tip}">`
+                          + `${label}${win ? `<em>${win}</em>` : ''}</span>${chips}${load}</div>`;
                 }
             }
 
@@ -3709,7 +4062,10 @@
                 priority: document.getElementById('schedPriority').value,
                 title: document.getElementById('schedTitle').value.trim(),
                 assigned_operative_code: operative || null,
-                scheduled_start: start ? new Date(start).toISOString() : null,
+                // Sent as local wall-clock, not UTC: a shift that runs 07:00-19:00
+                // means those hours at the site, and converting here would have
+                // the API judge the wrong hour for anyone outside UTC.
+                scheduled_start: start || null,
                 estimated_hours: hours ? parseFloat(hours) : null,
             };
             btn.disabled = true;

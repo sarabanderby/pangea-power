@@ -388,8 +388,11 @@ which creates a work order. Interactive docs at `/docs`. Key endpoints:
 | `GET /api/solar/predict` | Predicted vs simulated-actual output per solar site |
 | `GET /api/wave/predict` | Predicted vs actual output per wave farm |
 | `GET /api/wind/status` | Live wind speed per site and cut-out shutdown state |
-| `GET /api/operators` | Operator availability: shifts, leave, assignments |
+| `GET /api/operators` | Engineer roster: shifts, leave, assignments |
+| `GET /api/operators/availability` | Per-day shift, capacity and committed hours |
+| `GET /api/shifts` | Clock hours per shift |
 | `POST /api/agent/chat/stream` | Chat with the assistant, SSE token stream |
+| `POST /api/agent/actions/{id}/confirm` | Commit a write the assistant proposed |
 | `POST /api/voice/transcribe` | Audio to text |
 | `POST /api/voice/speak` | Text to WAV |
 
@@ -400,14 +403,41 @@ API from Open-Meteo Marine sea state. The assistant uses Granite 4.0 350M with
 a custom KServe runtime acting as a tool router, deciding which fleet data each
 question requires before the model answers.
 
+**Shift-aware scheduling.** `shift_definitions` pins each shift to clock hours
+(day 07:00-19:00, night 19:00-07:00, on-call unscheduled), and the
+`operative_shift()` / `reflow_assignments()` functions resolve the rota,
+one-off exception dates and leave into the shift someone is actually working on
+a given date. A work order lands at the start of its assignee's shift and fills
+one shift at a time, so multi-day work runs over consecutive working days and
+pauses over rest days.
+
+`operative_availability()` resolves that precedence once, day by day, and
+everything else reads it: `GET /api/operators/availability` serves the schedule
+calendar, the booking form warns against it before submitting, and
+`POST /api/maintenance` returns 409 rather than booking someone who is off,
+short of free hours, or outside their shift window. The database is the only
+place the rota is interpreted.
+
 **Wind cut-out.** Live wind above 22 m/s (`WIND_CUTOUT_MS`) marks a site as shut
 down. The resulting alert is synthesised at request time and merged into the
 alert feed rather than written to the database, so it clears automatically when
 the wind drops.
 
-**Database.** PostgreSQL 15 with pgvector, twelve tables covering sites,
+**Confirm-gated writes.** The assistant can raise work, but it cannot commit
+any. When a message is an instruction rather than a question — matched by regex,
+not by the model, because proposing a write on a misread question is worse than
+missing one — the arguments are resolved **in code** to a real turbine,
+operative and shift, recorded in `agent_actions` as `proposed`, and answered
+with a confirm card. Granite never extracts the parameters and never sees a
+write tool; it only writes the sentence above the card. Confirming replays the
+proposal through `POST /api/maintenance`, so a stale proposal whose shift was
+taken in the meantime is rejected like any other booking and recorded as
+`failed`. Every proposal, confirmation and refusal stays on the record.
+
+**Database.** PostgreSQL 15 with pgvector, fourteen tables covering sites,
 turbines, sensor time-series, predictions, alerts, work orders, parts,
-operatives and a RAG knowledge base. TimescaleDB is deliberately not used: its
+operatives, agent actions and a RAG knowledge base. TimescaleDB is deliberately
+not used: its
 Community features are source-available but not OSI open source, so time-series
 is stored in plain tables and rolled up with materialized views. All
 dependencies are OSI-approved permissive licences.
@@ -426,14 +456,18 @@ one — tracing stays off until you set it, and the API logs
 `mlflow tracing off: MLFLOW_TRACKING_URI is unset`. See
 [backend/README.md](backend/README.md#mlflow-tracing) for how to set it.
 
-**Evaluation.** `eval/` scores the assistant's tool-routing against expected
-calls using MLflow's `ToolCallCorrectness` scorer in exact-match mode, which is
-deterministic and needs no judge model:
+**Evaluation.** `eval/pangea_tool_calling.ipynb` scores tool routing against
+expected calls using MLflow's `ToolCallCorrectness` scorer in exact-match mode,
+which is deterministic and needs no judge model. It runs two arms over the same
+dataset: the deployed **laya** typed-decision router, and **Granite 4.0 350M
+picking tools for itself** via `<tool_call>` tags — the comparison behind the
+decision to route with laya rather than let the model choose.
+
+Open the notebook and run the cells in order; cell 2 is a preflight that fails
+loudly rather than scoring a broken setup. Point it at a backend first:
 
 ```bash
-pip install -r eval/requirements.txt
 export PANGEA_AGENT_URL=https://$(oc get route pangea-api -o jsonpath='{.spec.host}')
-python eval/eval_agent_tool_calls.py
 ```
 
 ## Tags

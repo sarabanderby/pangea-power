@@ -57,11 +57,11 @@ INSERT INTO parts_inventory (part_number, part_name, category, compatible_models
                              quantity_on_hand, quantity_reserved, reorder_point, reorder_quantity,
                              unit_cost, lead_time_days, warehouse_location, is_critical) VALUES
 ('BRG-MAIN-001', 'Main shaft bearing',        'bearing',             ARRAY['M','H']::turbine_model[], 'SKF',        3, 1, 2,  2,  18500.00, 90, 'WH-A / R1', TRUE),
-('GBX-SEAL-014', 'Gearbox oil seal kit',      'gearbox_component',   ARRAY['L','M','H']::turbine_model[], 'Bosch',  22, 4, 8, 20,    240.00, 14, 'WH-A / R3', FALSE),
+('GBX-SEAL-014', 'Gearbox oil seal kit',      'gearbox_component',   ARRAY['L','M','H']::turbine_model[], 'Bosch',  22, 5, 8, 20,    240.00, 14, 'WH-A / R3', FALSE),
 ('GEN-BRSH-007', 'Generator brush set',       'generator_component', ARRAY['L','M']::turbine_model[], 'ABB',       15, 2, 6, 15,    180.00, 10, 'WH-A / R4', FALSE),
 ('PIT-MTR-022',  'Blade pitch motor',         'pitch_system',        ARRAY['M','H']::turbine_model[], 'Moog',       4, 1, 2,  4,   6200.00, 45, 'WH-B / R1', TRUE),
 ('YAW-MTR-019',  'Yaw drive motor',           'yaw_system',          ARRAY['L','M','H']::turbine_model[], 'Bonfiglioli', 6, 0, 3, 6,  3100.00, 30, 'WH-B / R2', FALSE),
-('SNS-VIB-003',  'Vibration sensor (triax)',  'sensor',              ARRAY['L','M','H']::turbine_model[], 'PCB',    40, 5,12, 30,    320.00,  7, 'WH-A / R6', FALSE),
+('SNS-VIB-003',  'Vibration sensor (triax)',  'sensor',              ARRAY['L','M','H']::turbine_model[], 'PCB',    40, 6,12, 30,    320.00,  7, 'WH-A / R6', FALSE),
 ('SNS-TMP-004',  'Temperature sensor PT100',  'sensor',              ARRAY['L','M','H']::turbine_model[], 'IFM',    55, 3,15, 40,     45.00,  5, 'WH-A / R6', FALSE),
 ('HYD-FLD-030',  'Hydraulic fluid (20L)',     'hydraulic',           ARRAY['L','M','H']::turbine_model[], 'Shell',  28, 0,10, 30,     95.00,  7, 'WH-C / R1', FALSE),
 ('LUB-OIL-031',  'Gearbox lubrication oil',   'lubrication',         ARRAY['L','M','H']::turbine_model[], 'Mobil',  12, 2, 8, 24,    140.00,  7, 'WH-C / R2', FALSE),
@@ -70,7 +70,7 @@ INSERT INTO parts_inventory (part_number, part_name, category, compatible_models
 ('ELC-FUSE-060', 'HV fuse assembly',          'electrical',          ARRAY['L','M','H']::turbine_model[], 'Eaton',  18, 0, 8, 20,     75.00, 10, 'WH-A / R7', FALSE),
 ('COOL-FAN-070', 'Nacelle cooling fan',       'cooling',             ARRAY['M','H']::turbine_model[], 'ebm-papst', 2, 0, 3,  6,    410.00, 18, 'WH-B / R3', FALSE),
 ('SEAL-NAC-080', 'Nacelle weather seal',      'seal',                ARRAY['L','M','H']::turbine_model[], 'Trelleborg', 7, 1, 4, 10,  210.00, 12, 'WH-C / R4', FALSE),
-('FST-BLT-090',  'Tower flange bolt set',     'fastener',            ARRAY['L','M','H']::turbine_model[], 'Nord-Lock', 60, 0,20, 50,   38.00,  9, 'WH-C / R5', FALSE);
+('FST-BLT-090',  'Tower flange bolt set',     'fastener',            ARRAY['L','M','H']::turbine_model[], 'Nord-Lock', 60, 1,20, 50,   38.00,  9, 'WH-C / R5', FALSE);
 
 -- ---------------------------------------------------------------------------
 -- Maintenance operatives (15: 3 junior, 6 intermediate, 4 senior, 2 expert)
@@ -96,7 +96,7 @@ INSERT INTO maintenance_operatives (employee_code, first_name, last_name, email,
    ARRAY['blade_inspection'], 'Esbjerg', 1500, TRUE, TRUE, TRUE, DATE '2017-03-30', 54.00, NULL),
 ('OP-006','Elena','Navarro','elena.navarro@pangea.example','senior',
    ARRAY['electrical','mechanical','high_voltage','gwa_basic','gwa_advanced']::certification_type[],
-   ARRAY['gearbox'], 'Almería', 900, FALSE, FALSE, TRUE, DATE '2017-07-18', 53.00, DATE '2026-10-06'),
+   ARRAY['gearbox'], 'Almería', 900, FALSE, FALSE, TRUE, DATE '2017-07-18', 53.00, CURRENT_DATE + 1),
 ('OP-007','Mariana','Ferreira','mariana.ferreira@pangea.example','intermediate',
    ARRAY['electrical','mechanical','gwa_basic']::certification_type[],
    ARRAY['electrical_systems'], 'Lisbon', 700, FALSE, FALSE, TRUE, DATE '2019-01-14', 42.00, NULL),
@@ -117,7 +117,7 @@ INSERT INTO maintenance_operatives (employee_code, first_name, last_name, email,
    ARRAY['pitch_system'], 'Lisbon', 600, FALSE, FALSE, TRUE, DATE '2021-03-15', 39.00, NULL),
 ('OP-013','Robin','Haas','robin.haas@pangea.example','junior',
    ARRAY['electrical','mechanical','gwa_basic']::certification_type[],
-   ARRAY['general'], 'Szczecin', 400, FALSE, FALSE, FALSE, DATE '2023-05-02', 30.00, DATE '2026-10-02'),
+   ARRAY['general'], 'Szczecin', 400, FALSE, FALSE, FALSE, DATE '2023-05-02', 30.00, CURRENT_DATE - 3),
 ('OP-014','Lucía','Ortega','lucia.ortega@pangea.example','junior',
    ARRAY['mechanical','gwa_basic']::certification_type[],
    ARRAY['general'], 'Almería', 400, FALSE, FALSE, FALSE, DATE '2023-09-18', 29.00, NULL),
@@ -126,21 +126,22 @@ INSERT INTO maintenance_operatives (employee_code, first_name, last_name, email,
    ARRAY['general'], 'Chur', 400, FALSE, FALSE, TRUE, DATE '2024-01-08', 30.00, NULL);
 
 -- ---------------------------------------------------------------------------
--- Operative schedules
+-- Operative schedules. Exception dates are relative to the install date so the
+-- demo calendar stays populated however long after seeding it is opened.
 -- ---------------------------------------------------------------------------
 INSERT INTO operative_schedules (operative_id, effective_date, monday, tuesday, wednesday,
                                  thursday, friday, saturday, sunday,
                                  exception_dates, exception_reason)
-SELECT o.operative_id, DATE '2026-01-01', v.mon::shift_type, v.tue::shift_type, v.wed::shift_type,
+SELECT o.operative_id, CURRENT_DATE - 180, v.mon::shift_type, v.tue::shift_type, v.wed::shift_type,
        v.thu::shift_type, v.fri::shift_type, v.sat::shift_type, v.sun::shift_type,
        v.exceptions, v.reason
 FROM (VALUES
     ('OP-001','day','day','day','day','on_call','off','off',
-        ARRAY[DATE '2026-10-08', DATE '2026-10-09'], 'GWO advanced refresher, Esbjerg'),
+        ARRAY[CURRENT_DATE + 3, CURRENT_DATE + 4], 'GWO advanced refresher, Esbjerg'),
     ('OP-002','off','day','day','day','day','day','off',
         NULL::date[], NULL),
     ('OP-003','day','day','day','day','day','off','off',
-        ARRAY[DATE '2026-10-01'], 'High-voltage recertification'),
+        ARRAY[CURRENT_DATE + 7], 'High-voltage recertification'),
     ('OP-004','day','day','day','on_call','on_call','off','off',
         NULL::date[], NULL),
     ('OP-005','off','off','day','day','day','day','day',
@@ -154,24 +155,24 @@ FROM (VALUES
     ('OP-009','day','day','day','off','off','day','day',
         NULL::date[], NULL),
     ('OP-010','off','day','day','day','day','day','off',
-        ARRAY[DATE '2026-10-05'], 'Rope access reassessment'),
+        ARRAY[CURRENT_DATE], 'Rope access reassessment'),
     ('OP-011','day','day','day','day','day','off','on_call',
         NULL::date[], NULL),
     ('OP-012','off','off','night','night','night','night','night',
         NULL::date[], NULL),
     ('OP-013','day','day','day','day','day','off','off',
-        NULL::date[], NULL),
+        ARRAY[CURRENT_DATE + 5], 'Mentored climb assessment'),
     ('OP-014','day','day','day','off','off','day','day',
         NULL::date[], NULL),
     ('OP-015','day','day','day','day','off','off','off',
-        ARRAY[DATE '2026-10-12', DATE '2026-10-13'], 'GWO basic renewal, Chur')
+        ARRAY[CURRENT_DATE + 7, CURRENT_DATE + 8], 'GWO basic renewal, Chur')
 ) AS v(code, mon, tue, wed, thu, fri, sat, sun, exceptions, reason)
 JOIN maintenance_operatives o ON o.employee_code = v.code;
 
 -- Fortnight overrides; supersede the base rota until end_date.
 INSERT INTO operative_schedules (operative_id, effective_date, end_date, monday, tuesday, wednesday,
                                  thursday, friday, saturday, sunday, exception_reason)
-SELECT o.operative_id, DATE '2026-09-28', DATE '2026-10-11',
+SELECT o.operative_id, CURRENT_DATE - 7, CURRENT_DATE + 6,
        v.mon::shift_type, v.tue::shift_type, v.wed::shift_type, v.thu::shift_type,
        v.fri::shift_type, v.sat::shift_type, v.sun::shift_type, v.reason
 FROM (VALUES

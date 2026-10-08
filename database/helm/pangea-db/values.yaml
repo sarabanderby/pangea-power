@@ -20,3 +20,11 @@ credentials:
   database: pangea
   user: pangea_app
   password: pangea_app_pw
+
+# Nightly job that pulls the demo timeline forward: open work orders dated in
+# the past move on by whole weeks (same weekday, so the rota still fits) and
+# assignments are re-flowed onto real shifts. Turn off for a real deployment.
+rebase:
+  enabled: true
+  schedule: "15 2 * * *"
+  timeZone: "Europe/Stockholm"

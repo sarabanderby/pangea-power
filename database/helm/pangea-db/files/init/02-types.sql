@@ -38,3 +38,8 @@ CREATE TYPE alert_category AS ENUM (
     'parts_shortage', 'turbine_failure', 'operative_unavailable', 'system'
 );
 CREATE TYPE alert_status AS ENUM ('active', 'acknowledged', 'resolved', 'dismissed');
+
+-- Agent actions
+CREATE TYPE agent_action_status AS ENUM (
+    'proposed', 'executed', 'rejected', 'cancelled', 'failed'
+);
